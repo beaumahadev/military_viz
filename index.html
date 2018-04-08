@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>INFO 3300 - Project 2</title>
+<link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+<style>
+body { font-family: 'Merriweather', Calibri, sans-serif; }
+svg { border: solid #ccc 1px; }
+
+</style>
+</head>
+<body>
+
+<div id="plot"></div>
+
+<script>
+
+var widthScatter=200;
+var heightScatter=200;
+
+
+
+
+var scatterSVG = d3.select("#plot").append("svg")
+.attr("height", widthScatter).attr("width", heightScatter);
+
+var sampleData = [{name: "Boeing", profit: 1000, companytype: 1},{name: "Lockheed Martin", profit: 5000, companytype: 2},{name: "Cornell", profit: 10000, companytype: 3},{name: "GM", profit: 3000, companytype: 2}];
+
+var testData=[];
+var size=Math.random() * (10 - 3) + 3;
+for(var i=0;i<size;i++){
+  testData.push({name: "Company", profit: Math.random() * (10000 - 1000) + 1000, companytype: Math.random() * (3)});
+}
+
+//Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
+function scatterplot(data){
+  var minProfit=Infinity;
+  var maxProfit=0;
+  var circlePadding=10;
+
+  for(d in data){
+    console.log(data[d]);
+    if(data[d].profit > maxProfit){
+      maxProfit=data[d].profit;
+    }
+    if(data[d].profit < minProfit){
+      minProfit=data[d].profit;
+    }
+  }
+
+  scatterSVG.selectAll("circle").remove();
+  var rScale = d3.scaleSqrt().domain([minProfit, maxProfit]).range([10, (widthScatter-circlePadding)/data.length]);
+  var colorScale = d3.scaleOrdinal().domain([0,1,2]).range(["#4286f4","#23d15a","#8e49a3"]);
+
+  var numNodes = data.length;
+  var nodes = d3.range(numNodes).map(function(d) {
+    return {radius: rScale(data[d].profit), color: colorScale(data[d].companytype)}
+  })
+
+  console.log(nodes);
+
+  var simulation = d3.forceSimulation(nodes)
+    .force('charge', d3.forceManyBody().strength(5))
+    .force('center', d3.forceCenter(widthScatter / 2, heightScatter / 2))
+    .force('collision', d3.forceCollide().radius(function(d) {
+      return d.radius
+    }))
+    .on('tick', ticked);
+
+  function ticked() {
+    var u = d3.select('svg')
+      .selectAll('circle')
+      .data(nodes)
+
+    u.enter()
+      .append('circle')
+      .attr('r', function(d) {
+        return d.radius;
+      })
+      .style("fill", function (d) {
+        return d.color;
+            })
+      .merge(u)
+      .attr('cx', function(d) {
+        return d.x
+      })
+      .attr('cy', function(d) {
+        return d.y
+      })
+
+    u.exit().remove()
+  }
+}
+
+scatterplot(testData);
+
+
+</script>
+
+
+</body>
+</html>
