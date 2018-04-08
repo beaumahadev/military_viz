@@ -8,7 +8,19 @@
 <style>
 body { font-family: 'Merriweather', Calibri, sans-serif; }
 svg { border: solid #ccc 1px; }
-
+div.tooltip { 
+    position: absolute;     
+    text-align: center;     
+    width: 60px;          
+    height: 28px;         
+    padding: 2px;       
+    font: 12px sans-serif;    
+    background: #626D71; 
+    color: white;
+    border: 0px;    
+    border-radius: 8px;     
+    pointer-events: none;     
+}
 </style>
 </head>
 <body>
@@ -22,20 +34,25 @@ var heightScatter=200;
 
 
 
-
-var scatterSVG = d3.select("#plot").append("svg")
-.attr("height", widthScatter).attr("width", heightScatter);
-
-var sampleData = [{name: "Boeing", profit: 1000, companytype: 1},{name: "Lockheed Martin", profit: 5000, companytype: 2},{name: "Cornell", profit: 10000, companytype: 3},{name: "GM", profit: 3000, companytype: 2}];
-
 var testData=[];
 var size=Math.random() * (10 - 3) + 3;
 for(var i=0;i<size;i++){
-  testData.push({name: "Company", profit: Math.random() * (10000 - 1000) + 1000, companytype: Math.random() * (3)});
+  testData.push({name: "Company"+i, profit: Math.random() * (10000 - 1000) + 1000, companytype: Math.random() * (3)});
 }
 
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
 function scatterplot(data){
+
+  var scatterSVG = d3.select("#plot").append("svg")
+. attr("height", widthScatter).attr("width", heightScatter);
+  
+  var tooldiv = d3.select("body").append("div") 
+    .attr("class", "tooltip")       
+    .style("opacity", 0);
+
+
+
+
   var minProfit=Infinity;
   var maxProfit=0;
   var circlePadding=10;
@@ -50,13 +67,18 @@ function scatterplot(data){
     }
   }
 
+
   scatterSVG.selectAll("circle").remove();
+
+
   var rScale = d3.scaleSqrt().domain([minProfit, maxProfit]).range([10, (widthScatter-circlePadding)/data.length]);
   var colorScale = d3.scaleOrdinal().domain([0,1,2]).range(["#4286f4","#23d15a","#8e49a3"]);
 
+
+
   var numNodes = data.length;
   var nodes = d3.range(numNodes).map(function(d) {
-    return {radius: rScale(data[d].profit), color: colorScale(data[d].companytype)}
+    return {radius: rScale(data[d].profit), color: colorScale(data[d].companytype), name: data[d].name, profit: data[d].profit}
   })
 
   console.log(nodes);
@@ -89,6 +111,19 @@ function scatterplot(data){
       .attr('cy', function(d) {
         return d.y
       })
+      .on("mouseover", function(d) {    
+        tooldiv.transition()    
+           .duration(200)    
+           .style("opacity", .9);    
+        tooldiv .html(d.name + "<br/>"  + d.profit.toFixed(2))  
+            .style("left", (d3.event.pageX) + "px")   
+            .style("top", (d3.event.pageY - 28) + "px");  
+      })          
+      .on("mouseout", function(d) {   
+        tooldiv.transition()    
+           .duration(500)    
+           .style("opacity", 0); 
+      });
 
     u.exit().remove()
   }
