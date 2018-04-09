@@ -35,6 +35,8 @@ var heightScatter=200;
 var height = 700;
 var width = 700;
 
+var warData = [{name: "War 1", companies: "", profit: 100}, {name: "War 2", companies: "", profit: 150}, {name: "War 3", companies: "", profit: 90}];
+
 var testData=[];
 var size=Math.random() * (10 - 3) + 3;
 for(var i=0;i<size;i++){
@@ -143,7 +145,7 @@ var arc = d3.arc()
 
 var pie = d3.pie()
 .sort(null)
-.value(function (d) {return d.profit})
+.value(5)
 .padAngle(.02);
 
 var donutSVG = mainSVG.append('svg')
@@ -192,7 +194,7 @@ g.append('path')
 }
 
 scatterplot(testData);
-donutchartouter(testData);
+donutchartouter(warData);
 donutchartinner(testData);
 
 
