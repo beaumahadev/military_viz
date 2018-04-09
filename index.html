@@ -147,7 +147,7 @@ var pie = d3.pie()
 .padAngle(.02);
 
 var donutSVG = mainSVG.append('svg')
-.attr('height', height).attr('width', width)
+.attr('height', height).attr('width', width);
 
 var g = donutSVG.selectAll('.arc')
 .data(pie(data))
@@ -161,14 +161,39 @@ g.append('path')
 }
 
 function donutchartinner(data) {
-var width = 300;
-var height = 300;
-var radius = Math.min(width, height) / 2;
+var innerWidth = 300;
+var innerHeight = 300;
+var innerRadius = Math.min(innerWidth, innerHeight) / 2;
+
+var arc = d3.arc()
+.outerRadius(innerRadius - 20)
+.innerRadius(innerRadius - 35)
+.cornerRadius(2);
+
+var pie = d3.pie()
+.sort(null)
+.value(function (d) {return d.profit})
+.padAngle(.02);
+
+var innerSVG = mainSVG.append('svg')
+.attr('height', innerHeight).attr('width', innerWidth)
+.attr("transform", "translate(" + (width/2 - innerWidth/2) + "," + (height/2 - innerHeight/2) + ")" );
+
+var g  = innerSVG.selectAll('.arc')
+.data(pie(data))
+.enter().append('g')
+.attr('class', 'arc')
+.attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" );
+
+g.append('path')
+.attr('d', arc)
+.style('fill', '#cdcdcd');
 
 }
 
 scatterplot(testData);
 donutchartouter(testData);
+donutchartinner(testData);
 
 
 </script>
