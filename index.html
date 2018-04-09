@@ -13,7 +13,7 @@ div.tooltip {
     text-align: center;     
     width: 60px;          
     height: 28px;         
-    padding: 2px;       
+    padding: 10px;       
     font: 12px sans-serif;    
     background: #626D71; 
     color: white;
@@ -32,8 +32,6 @@ div.tooltip {
 var widthScatter=200;
 var heightScatter=200;
 
-
-
 var testData=[];
 var size=Math.random() * (10 - 3) + 3;
 for(var i=0;i<size;i++){
@@ -49,9 +47,6 @@ function scatterplot(data){
   var tooldiv = d3.select("body").append("div") 
     .attr("class", "tooltip")       
     .style("opacity", 0);
-
-
-
 
   var minProfit=Infinity;
   var maxProfit=0;
@@ -129,7 +124,39 @@ function scatterplot(data){
   }
 }
 
-scatterplot(testData);
+function donutchart(data) {
+
+var width = 500;
+var height = 500;
+var radius = Math.min(width, height) / 2;
+
+var arc = d3.arc()
+.outerRadius(radius - 10)
+.innerRadius(radius - 25)
+.cornerRadius(2);
+
+var pie = d3.pie()
+.sort(null)
+.value(function (d) {return d.profit})
+.padAngle(.02);
+
+var donutSVG = d3.select('#plot').append('svg')
+.attr('height', height).attr('width', width);
+
+var g = donutSVG.selectAll('.arc')
+.data(pie(data))
+.enter().append('g')
+.attr('class', 'arc')
+.attr("transform", "translate(" + width/2 + "," + height/2 + ")" );;
+
+g.append('path')
+.attr('d', arc)
+.style('fill', '#cdcdcd');
+
+}
+
+//scatterplot(testData);
+donutchart(testData);
 
 
 </script>
