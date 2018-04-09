@@ -13,7 +13,7 @@ div.tooltip {
     text-align: center;     
     width: 60px;          
     height: 28px;         
-    padding: 2px;       
+    padding: 10px;       
     font: 12px sans-serif;    
     background: #626D71; 
     color: white;
@@ -33,6 +33,8 @@ var widthScatter=200;
 var heightScatter=200;
 var minProfit=1000;
 var maxProfit=1000000;
+var height = 700;
+var width = 700;
 
 
 var testData=[];
@@ -41,17 +43,19 @@ for(var i=0;i<size;i++){
   testData.push({name: "Company"+i, profit: Math.random() * (maxProfit - minProfit) + minProfit, companytype: Math.random() * (3)});
 }
 
+var mainSVG = d3.select("#plot").append('svg')
+.attr("height", height).attr("width", width);
+
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
 function scatterplot(data){
 
-  var scatterSVG = d3.select("#plot").append("svg")
-. attr("height", widthScatter).attr("width", heightScatter);
+  var scatterSVG = mainSVG.append("svg")
+. attr("height", widthScatter).attr("width", heightScatter)
+.attr("transform", "translate(" + (width/2 - widthScatter/2) + "," + (height/2 - heightScatter/2) + ")" );
   
   var tooldiv = d3.select("body").append("div") 
     .attr("class", "tooltip")       
     .style("opacity", 0);
-
-
 
 
   var averageProfit= (minProfit+maxProfit)/2;
@@ -60,16 +64,10 @@ function scatterplot(data){
   for(d in data){
     totalProfit+=data[d].profit;
   }
-
-
-
   scatterSVG.selectAll("circle").remove();
-
-
   var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([3, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
   var colorScale = d3.scaleOrdinal().domain([0,1,2]).range(["#4286f4","#23d15a","#8e49a3"]);
   console.log(totalProfit/averageProfit);
-
 
 
   var numNodes = data.length;
@@ -93,7 +91,7 @@ function scatterplot(data){
     .on('tick', ticked);
 
   function ticked() {
-    var u = d3.select('svg')
+    var u = scatterSVG
       .selectAll('circle')
       .data(nodes)
 
@@ -107,10 +105,10 @@ function scatterplot(data){
             })
       .merge(u)
       .attr('cx', function(d) {
-        return d.x
+        return d.x;
       })
       .attr('cy', function(d) {
-        return d.y
+        return d.y;
       })
       .on("mouseover", function(d) {    
         tooldiv.transition()    
@@ -127,6 +125,8 @@ function scatterplot(data){
       });
 
     u.exit().remove()
+
+    //.attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
   }
 }
   //Code for bounding box taken from https://bl.ocks.org/cmgiven/547658968d365bcc324f3e62e175709b
@@ -162,7 +162,6 @@ function scatterplot(data){
             }
         }
     }
-
     force.initialize = function (_) {
         sizes = (nodes = _).map(size)
     }
@@ -179,7 +178,73 @@ function scatterplot(data){
 
     return force
 }
+
+
+function donutchartouter(data) {
+
+var outerWidth = 500;
+var outerHeight = 500;
+var outerRadius = Math.min(outerWidth, outerHeight) / 2;
+
+var arc = d3.arc()
+.outerRadius(outerRadius - 20)
+.innerRadius(outerRadius - 35)
+.cornerRadius(2);
+
+var pie = d3.pie()
+.sort(null)
+.value(function (d) {return d.profit})
+.padAngle(.02);
+
+var donutSVG = mainSVG.append('svg')
+.attr('height', height).attr('width', width);
+
+var g = donutSVG.selectAll('.arc')
+.data(pie(data))
+.enter().append('g')
+.attr('class', 'arc')
+.attr("transform", "translate(" + width/2 + "," + height/2 + ")" );
+
+g.append('path')
+.attr('d', arc)
+.style('fill', '#cdcdcd');
+}
+
+function donutchartinner(data) {
+var innerWidth = 300;
+var innerHeight = 300;
+var innerRadius = Math.min(innerWidth, innerHeight) / 2;
+
+var arc = d3.arc()
+.outerRadius(innerRadius - 20)
+.innerRadius(innerRadius - 35)
+.cornerRadius(2);
+
+var pie = d3.pie()
+.sort(null)
+.value(function (d) {return d.profit})
+.padAngle(.02);
+
+var innerSVG = mainSVG.append('svg')
+.attr('height', innerHeight).attr('width', innerWidth)
+.attr("transform", "translate(" + (width/2 - innerWidth/2) + "," + (height/2 - innerHeight/2) + ")" );
+
+var g  = innerSVG.selectAll('.arc')
+.data(pie(data))
+.enter().append('g')
+.attr('class', 'arc')
+.attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" );
+
+g.append('path')
+.attr('d', arc)
+.style('fill', '#cdcdcd');
+
+}
+
+
 scatterplot(testData);
+donutchartouter(testData);
+donutchartinner(testData);
 
 
 </script>
