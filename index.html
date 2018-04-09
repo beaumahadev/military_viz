@@ -35,7 +35,7 @@ var heightScatter=200;
 var height = 700;
 var width = 700;
 
-var warData = [{name: "War 1", companies: "", profit: 100}, {name: "War 2", companies: "", profit: 150}, {name: "War 3", companies: "", profit: 90}];
+var warData = [{name: "War 1", companies: ["Company1", "Company2"], duration: 100}, {name: "War 2", companies: ["Company1", "Company3"], duration: 150}, {name: "War 3", companies: ["Company4","Company1", "Company2"], duration: 90}];
 
 var testData=[];
 var size=Math.random() * (10 - 3) + 3;
@@ -155,7 +155,25 @@ var g = donutSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
 .attr('class', 'arc')
-.attr("transform", "translate(" + width/2 + "," + height/2 + ")" );
+.attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
+.on("mouseover", function(d) {
+  for(var i in d.data.companies){
+    console.log('path#' + d.data.companies[i]);
+    var arc = d3.select('g#' + d.data.companies[i]);
+    arc.selectAll("path")
+      .style('fill', '#ff5050');
+   
+  }
+})
+.on("mouseout", function(d) {
+  for(var i in d.data.companies){
+    console.log('path#' + d.data.companies[i]);
+    var arc = d3.select('g#' + d.data.companies[i]);
+    arc.selectAll("path")
+      .style('fill', '#cdcdcd');
+   
+  }
+});
 
 g.append('path')
 .attr('d', arc)
@@ -185,7 +203,11 @@ var g  = innerSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
 .attr('class', 'arc')
-.attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" );
+.attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" )
+.attr("id", function(d) { return d.data.name })
+.on("mouseover", function(d) {
+  console.log(d.data.name);
+}) ;
 
 g.append('path')
 .attr('d', arc)
@@ -194,8 +216,9 @@ g.append('path')
 }
 
 scatterplot(testData);
-donutchartouter(warData);
 donutchartinner(testData);
+donutchartouter(warData);
+
 
 
 </script>
