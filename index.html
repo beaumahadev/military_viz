@@ -32,17 +32,24 @@ div.tooltip {
 var widthScatter=200;
 var heightScatter=200;
 
+var height = 700;
+var width = 700;
+
 var testData=[];
 var size=Math.random() * (10 - 3) + 3;
 for(var i=0;i<size;i++){
   testData.push({name: "Company"+i, profit: Math.random() * (10000 - 1000) + 1000, companytype: Math.random() * (3)});
 }
 
+var mainSVG = d3.select("#plot").append('svg')
+.attr("height", height).attr("width", width);
+
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
 function scatterplot(data){
 
-  var scatterSVG = d3.select("#plot").append("svg")
-. attr("height", widthScatter).attr("width", heightScatter);
+  var scatterSVG = mainSVG.append("svg")
+. attr("height", widthScatter).attr("width", heightScatter)
+.attr("transform", "translate(" + (width/2 - widthScatter/2) + "," + (height/2 - heightScatter/2) + ")" );
   
   var tooldiv = d3.select("body").append("div") 
     .attr("class", "tooltip")       
@@ -62,13 +69,10 @@ function scatterplot(data){
     }
   }
 
-
   scatterSVG.selectAll("circle").remove();
-
 
   var rScale = d3.scaleSqrt().domain([minProfit, maxProfit]).range([10, (widthScatter-circlePadding)/data.length]);
   var colorScale = d3.scaleOrdinal().domain([0,1,2]).range(["#4286f4","#23d15a","#8e49a3"]);
-
 
 
   var numNodes = data.length;
@@ -87,7 +91,7 @@ function scatterplot(data){
     .on('tick', ticked);
 
   function ticked() {
-    var u = d3.select('svg')
+    var u = scatterSVG
       .selectAll('circle')
       .data(nodes)
 
@@ -101,10 +105,10 @@ function scatterplot(data){
             })
       .merge(u)
       .attr('cx', function(d) {
-        return d.x
+        return d.x;
       })
       .attr('cy', function(d) {
-        return d.y
+        return d.y;
       })
       .on("mouseover", function(d) {    
         tooldiv.transition()    
@@ -121,18 +125,20 @@ function scatterplot(data){
       });
 
     u.exit().remove()
+
+    //.attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
   }
 }
 
-function donutchart(data) {
+function donutchartouter(data) {
 
-var width = 500;
-var height = 500;
-var radius = Math.min(width, height) / 2;
+var outerWidth = 500;
+var outerHeight = 500;
+var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
-.outerRadius(radius - 10)
-.innerRadius(radius - 25)
+.outerRadius(outerRadius - 20)
+.innerRadius(outerRadius - 35)
 .cornerRadius(2);
 
 var pie = d3.pie()
@@ -140,23 +146,29 @@ var pie = d3.pie()
 .value(function (d) {return d.profit})
 .padAngle(.02);
 
-var donutSVG = d3.select('#plot').append('svg')
-.attr('height', height).attr('width', width);
+var donutSVG = mainSVG.append('svg')
+.attr('height', height).attr('width', width)
 
 var g = donutSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
 .attr('class', 'arc')
-.attr("transform", "translate(" + width/2 + "," + height/2 + ")" );;
+.attr("transform", "translate(" + width/2 + "," + height/2 + ")" );
 
 g.append('path')
 .attr('d', arc)
 .style('fill', '#cdcdcd');
+}
+
+function donutchartinner(data) {
+var width = 300;
+var height = 300;
+var radius = Math.min(width, height) / 2;
 
 }
 
-//scatterplot(testData);
-donutchart(testData);
+scatterplot(testData);
+donutchartouter(testData);
 
 
 </script>
