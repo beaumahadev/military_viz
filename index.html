@@ -40,15 +40,13 @@ var maxProfit=1000000;
 var height = 700;
 var width = 700;
 
-
-
 var companySize=Math.random() * (50 - 30) + 30;
 var warSize= Math.random() * (50 - 30) + 30;
-var companyData=[]
+var companyData=[];
 var warData=[];
 
 for(var i=0;i<companySize;i++){
-  companyData.push({name: "Company"+i, id: i, profit: Math.random() * (maxProfit - minProfit) + minProfit});
+  companyData.push({name: "Company"+ i, id: i, profit: Math.random() * (maxProfit - minProfit) + minProfit});
 }
 
 function getCompanies(int){
@@ -80,7 +78,7 @@ function scatterplot(rawdata, colors){
     }
   }
 
-  var scatterSVG = mainSVG.append("svg")
+  var scatterSVG = mainSVG.append("g")
     .attr("id", function(d) { return "scatterSVG"})
     .attr("height", widthScatter).attr("width", heightScatter)
     .attr("transform", "translate(" + (width/2 - widthScatter/2) + "," + (height/2 - heightScatter/2) + ")" );
@@ -225,7 +223,7 @@ var pie = d3.pie()
 .value(function (d) {return d.duration})
 .padAngle(.02);
 
-var donutSVG = mainSVG.append('svg')
+var donutSVG = mainSVG.append('g')
 .attr('height', height).attr('width', width);
 
 var g = donutSVG.selectAll('.arc')
@@ -284,7 +282,7 @@ var pie = d3.pie()
 .value(10)
 .padAngle(.02);
 
-var innerSVG = mainSVG.append('svg')
+var innerSVG = mainSVG.append('g')
 .attr('height', innerHeight).attr('width', innerWidth)
 .attr("transform", "translate(" + (width/2 - innerWidth/2) + "," + (height/2 - innerHeight/2) + ")" );
 
