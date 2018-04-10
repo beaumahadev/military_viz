@@ -7,7 +7,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
 <style>
 body { font-family: 'Merriweather', Calibri, sans-serif; }
-svg { border: solid #ccc 1px; }
+svg { 
+ }
 div.tooltip { 
     position: absolute;     
     text-align: center;     
@@ -20,6 +21,9 @@ div.tooltip {
     border: 0px;    
     border-radius: 8px;     
     pointer-events: none;     
+}
+body{
+  background-color:#25183a;
 }
 </style>
 </head>
@@ -228,30 +232,34 @@ var g = donutSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
 .attr('class', 'arc')
+.attr("id", function(d) { return d.data.name })
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
   console.log(d.data.name);
-
+  console.log(g.select);
+ // console.log(g.select('#'+d.data.name).selectAll("path").style("fill"));
+  //g.selectAll("path").style("fill", function(d){d3.rgb(d3.select('#'+d.data.name).selectAll("path").style("fill")).darker(1)});
+  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
+  
   var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
     var currentcolor=arc.selectAll("path").style("fill");
     colors.push({name: d.data.companies[i], color: currentcolor});
-    arc.selectAll("path")
-      .style("fill", function(d){return d3.rgb(currentcolor).darker(1);})
+    arc
+      .style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
    
   }
   scatterplot(d.data.companies, colors);
 })
 .on("mouseout", function(d) {
+  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   var scatter= d3.select('#scatterSVG').remove();
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
     var currentcolor=arc.selectAll("path").style("fill");
-    arc.selectAll("path")
-      .style("fill", function(d){return d3.rgb(currentcolor).brighter(1);
-      })
-
+    arc
+      .style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   }
 });
 
