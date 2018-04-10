@@ -44,7 +44,7 @@ var companyData=[]
 var warData=[];
 
 for(var i=0;i<companySize;i++){
-  companyData.push({name: "Company"+i, profit: Math.random() * (maxProfit - minProfit) + minProfit, companytype: Math.floor(Math.random() * (3))});
+  companyData.push({name: "Company"+i, id: i, profit: Math.random() * (maxProfit - minProfit) + minProfit});
 }
 
 function getCompanies(int){
@@ -58,14 +58,14 @@ function getCompanies(int){
 }
 
 for(var i=0;i<warSize;i++){
-  warData.push({name: "War"+i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
+  warData.push({name: "War"+i, id: i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
 }
 
 var mainSVG = d3.select("#plot").append('svg')
 .attr("height", height).attr("width", width);
 
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
-function scatterplot(rawdata){
+function scatterplot(rawdata, colors){
 
   var data=[]
   for(var d in rawdata){
@@ -94,13 +94,11 @@ function scatterplot(rawdata){
   }
 
   var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([3, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
-  var colorScale = d3.scaleOrdinal().domain([0,1,2]).range(["#4286f4","#23d15a","#8e49a3"]);
-  //console.log(totalProfit/averageProfit);
 
 
   var numNodes = data.length;
   var nodes = d3.range(numNodes).map(function(d) {
-    return {radius: rScale(data[d].profit), color: colorScale(data[d].companytype), name: data[d].name, profit: data[d].profit}
+    return {radius: rScale(data[d].profit), color: data[d].color, name: data[d].name, profit: data[d].profit}
   })
 
   var boxForce = boundedBox()
@@ -208,6 +206,7 @@ function scatterplot(rawdata){
 
 function donutchartouter(data) {
 
+
 var outerWidth = 500;
 var outerHeight = 500;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
@@ -232,27 +231,34 @@ var g = donutSVG.selectAll('.arc')
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
   console.log(d.data.name);
-  scatterplot(d.data.companies);
+
+  var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
+    var currentcolor=arc.selectAll("path").style("fill");
+    colors.push({name: d.data.companies[i], color: currentcolor});
     arc.selectAll("path")
-      .style('fill', '#ff5050');
+      .style("fill", function(d){return d3.rgb(currentcolor).darker(1);})
    
   }
+  scatterplot(d.data.companies, colors);
 })
 .on("mouseout", function(d) {
+  var scatter= d3.select('#scatterSVG').remove();
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
+    var currentcolor=arc.selectAll("path").style("fill");
     arc.selectAll("path")
-      .style('fill', '#cdcdcd');
-    var scatter= d3.select('#scatterSVG').remove();
-   
+      .style("fill", function(d){return d3.rgb(currentcolor).brighter(1);
+      })
+
   }
 });
 
 g.append('path')
 .attr('d', arc)
 .style('fill', '#cdcdcd');
+
 }
 
 function donutchartinner(data) {
@@ -286,11 +292,17 @@ var g  = innerSVG.selectAll('.arc')
 
 g.append('path')
 .attr('d', arc)
-.style('fill', '#cdcdcd');
+.style('fill', function(d){
+  d.data.color = innerColorScale(d.data.id);
+  return d.data.color;
+  });
 
 }
 
 
+var innerColorScale = d3.scaleOrdinal()
+    .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
+    .domain([0, companySize]);
 
 donutchartinner(companyData);
 donutchartouter(warData);
