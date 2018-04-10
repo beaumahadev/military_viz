@@ -37,25 +37,49 @@ var height = 700;
 var width = 700;
 
 
-var warData = [{name: "War 1", companies: ["Company1", "Company2"], duration: 100}, {name: "War 2", companies: ["Company1", "Company3"], duration: 150}, {name: "War 3", companies: ["Company4","Company1", "Company2"], duration: 50}];
 
+var companySize=Math.random() * (50 - 30) + 30;
+var warSize= Math.random() * (50 - 30) + 30;
+var companyData=[]
+var warData=[];
 
+for(var i=0;i<companySize;i++){
+  companyData.push({name: "Company"+i, profit: Math.random() * (maxProfit - minProfit) + minProfit, companytype: Math.floor(Math.random() * (3))});
+}
 
-var testData=[];
-var size=Math.random() * (10 - 3) + 3;
-for(var i=0;i<size;i++){
-  testData.push({name: "Company"+i, profit: Math.random() * (maxProfit - minProfit) + minProfit, companytype: Math.random() * (3)});
+function getCompanies(int){
+  var num=Math.random() * (10 - 3) + 3;
+  var companies = []
+  for(var i=0;i<num;i++){
+    companies.push("Company"+Math.floor(Math.random() * (int)));
+
+  }
+  return companies;
+}
+
+for(var i=0;i<warSize;i++){
+  warData.push({name: "War"+i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
 }
 
 var mainSVG = d3.select("#plot").append('svg')
 .attr("height", height).attr("width", width);
 
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
-function scatterplot(data){
+function scatterplot(rawdata){
+
+  var data=[]
+  for(var d in rawdata){
+    for(var c in companyData){
+      if(rawdata[d] == companyData[c].name){
+        data.push(companyData[c]);
+      }
+    }
+  }
 
   var scatterSVG = mainSVG.append("svg")
-. attr("height", widthScatter).attr("width", heightScatter)
-.attr("transform", "translate(" + (width/2 - widthScatter/2) + "," + (height/2 - heightScatter/2) + ")" );
+    .attr("id", function(d) { return "scatterSVG"})
+    .attr("height", widthScatter).attr("width", heightScatter)
+    .attr("transform", "translate(" + (width/2 - widthScatter/2) + "," + (height/2 - heightScatter/2) + ")" );
   
   var tooldiv = d3.select("body").append("div") 
     .attr("class", "tooltip")       
@@ -68,18 +92,16 @@ function scatterplot(data){
   for(d in data){
     totalProfit+=data[d].profit;
   }
-  scatterSVG.selectAll("circle").remove();
+
   var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([3, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
   var colorScale = d3.scaleOrdinal().domain([0,1,2]).range(["#4286f4","#23d15a","#8e49a3"]);
-  console.log(totalProfit/averageProfit);
+  //console.log(totalProfit/averageProfit);
 
 
   var numNodes = data.length;
   var nodes = d3.range(numNodes).map(function(d) {
     return {radius: rScale(data[d].profit), color: colorScale(data[d].companytype), name: data[d].name, profit: data[d].profit}
   })
-
-  console.log(nodes);
 
   var boxForce = boundedBox()
     .bounds([[0, 0], [widthScatter, heightScatter]])
@@ -209,8 +231,9 @@ var g = donutSVG.selectAll('.arc')
 .attr('class', 'arc')
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
+  console.log(d.data.name);
+  scatterplot(d.data.companies);
   for(var i in d.data.companies){
-    console.log('path#' + d.data.companies[i]);
     var arc = d3.select('g#' + d.data.companies[i]);
     arc.selectAll("path")
       .style('fill', '#ff5050');
@@ -219,10 +242,10 @@ var g = donutSVG.selectAll('.arc')
 })
 .on("mouseout", function(d) {
   for(var i in d.data.companies){
-    console.log('path#' + d.data.companies[i]);
     var arc = d3.select('g#' + d.data.companies[i]);
     arc.selectAll("path")
       .style('fill', '#cdcdcd');
+    var scatter= d3.select('#scatterSVG').remove();
    
   }
 });
@@ -268,8 +291,8 @@ g.append('path')
 }
 
 
-scatterplot(testData);
-donutchartinner(testData);
+
+donutchartinner(companyData);
 donutchartouter(warData);
 
 
