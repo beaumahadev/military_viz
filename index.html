@@ -45,20 +45,35 @@ var width = 800;
 var warDataReal = [];
 var counter = -1;
 
-d3.csv("INFO3300_P2 - List of Wars.csv", function(data) {
-  data.forEach(function(d) {
-    d.name = d["NameofConflict"];
-    if (d.Finish === "Ongoing") {
-      d.Finish = 2018;
-    }
-    d.duration = d.Finish - d.Start + 1;
-    d.companies = getCompanies(companySize);
-    d.id = counter;
-    counter++;
-    warDataReal.push(d);
-  });
-  warDataReal.shift();
-  console.log(warDataReal);
+var innerColorScale = d3.scaleOrdinal()
+    .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
+    .domain([0, companySize]);
+
+d3.queue()
+        .defer(d3.csv, "data/wars.csv")
+        .await(callback)
+        function callback (error, data) {
+          data.forEach(function(d) {
+            d.name = d["Name of Conflict"];
+            if (d.Finish === "Ongoing") {
+              d.Finish = 2018;
+            }
+            d.duration = d.Finish - d.Start + 1;
+            d.companies = getCompanies(companySize);
+            d.id = counter;
+            counter++;
+            warDataReal.push(d);
+          });
+          warDataReal.shift();
+          console.log(warDataReal);
+          donutchartinner(companyData);
+          donutchartouter(warDataReal);
+          //donutchartouter(warData);
+
+        }
+
+d3.csv("data/wars.csv", function(data) {
+  
 });
 
 
@@ -373,13 +388,7 @@ g.append('circle')
 
 }
 
-var innerColorScale = d3.scaleOrdinal()
-    .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
-    .domain([0, companySize]);
 
-donutchartinner(companyData);
-//donutchartouter(warDataReal);
-donutchartouter(warData);
 
 </script>
 </body>
