@@ -35,8 +35,8 @@ body{
 
 <script>
 
-var widthScatter=300;
-var heightScatter=300;
+var widthScatter=250;
+var heightScatter=250;
 var minProfit=1000;
 var maxProfit=1000000;
 var height = 800;
@@ -217,7 +217,6 @@ function scatterplot(rawdata, colors){
 
 function donutchartouter(data) {
 
-
 var outerWidth = 700;
 var outerHeight = 700;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
@@ -315,6 +314,61 @@ g.append('path')
 
 }
 
+function addPaths(wardata, countrydata) {
+
+var outerPathRadius = 630 / 2;
+var innerPathRadius = 420 / 2;
+
+var outerArc = d3.arc()
+.outerRadius(outerPathRadius - 10)
+.innerRadius(outerPathRadius - 20);
+
+var innerArc = d3.arc()
+.outerRadius(innerPathRadius - 10)
+.innerRadius(innerPathRadius - 20);
+
+var outerPie = d3.pie()
+.sort(null)
+.value(function (d) {return d.duration})
+.padAngle(0.02);
+
+var innerPie = d3.pie()
+.sort(null)
+.value(10)
+.padAngle(.02);
+
+var outerPathSVG = mainSVG.append('g')
+.attr('height', outerPathRadius).attr('width', outerPathRadius)
+.attr("transform", "translate(" + (width/2 - outerPathRadius) + "," + (height/2 - outerPathRadius) + ")" );
+
+var innerPathSVG = mainSVG.append('g')
+.attr('height', innerPathRadius).attr('width', innerPathRadius)
+.attr("transform", "translate(" + (width/2 - innerPathRadius) + "," + (height/2 - innerPathRadius) + ")" );
+
+var outerG = outerPathSVG.selectAll('.arc')
+.data(outerPie(wardata))
+.enter().append('g')
+.attr('class', 'arc')
+.attr("transform", "translate(" + outerPathRadius + "," + outerPathRadius + ")" );
+
+outerG.append('circle')
+.attr("cx", function(d) {console.log(outerArc.centroid(d));return outerArc.centroid(d)[0];})
+.attr("cy", function(d) {return outerArc.centroid(d)[1];})
+.attr("r", 2);
+
+var innerG = innerPathSVG.selectAll('.arc')
+.data(innerPie(companyData))
+.enter().append('g')
+.attr('class', 'arc')
+.attr("transform", "translate(" + innerPathRadius + "," + innerPathRadius + ")" );
+
+innerG.append('circle')
+.attr("cx", function(d) {console.log(innerArc.centroid(d));return innerArc.centroid(d)[0];})
+.attr("cy", function(d) {return innerArc.centroid(d)[1];})
+.attr("r", 2);
+
+}
+
 
 
 var innerColorScale = d3.scaleOrdinal()
@@ -323,6 +377,7 @@ var innerColorScale = d3.scaleOrdinal()
 
 donutchartinner(companyData);
 donutchartouter(warData);
+addPaths(warData);
 
 
 
