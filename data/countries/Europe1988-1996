@@ -1,49 +1,49 @@
-Country Notes 1988 1989 1990 1991 1992 1993 1994 1995 1996
-Albania § ¶ 66 . . 226 232 164 126 115 110 102 92
-Bosnia-Herzegovina † ¶ 67 xxx xxx xxx xxx . . . . . . . . . .
-Bulgaria † 68 . . 3684 2976 1611 1217 920 788 776 637
-Croatia 69 xxx xxx xxx xxx 1844 2342 2632 2800 2624
-Czech Rep. 70 xxx xxx xxx xxx xxx 2223 2297 2202 2184
-Czechoslovakia 71 6391 9439 8234 5401 5479 xxx xxx xxx xxx
-Estonia 72 xxx xxx xxx xxx 46.2 62.2 79.1 78.4 76.3
-German DR 73 9885 10118 xxx xxx xxx xxx xxx xxx xxx
-Hungary 3342 2648 2291 1721 1662 1432 1418 1068 1004
-Kosovo xxx xxx xxx xxx xxx xxx xxx xxx xxx
-Latvia 74 xxx xxx xxx xxx . . 81.6 95.4 92.4 71.9
-Lithuania xxx xxx xxx xxx . . 146 78.9 82.1 91
-Macedonia, FYR 75 xxx xxx xxx xxx . . . . . . . . 140
-Montenegro 76 xxx xxx xxx xxx xxx xxx xxx xxx xxx
-Poland 77 7164 5820 6046 4257 4125 4521 4513 4541 4778
-Romania 7972 8490 3739 3878 3034 1832 2184 2130 2070
-Serbia 78 xxx xxx xxx xxx . . . . . . . . 956
-Slovak Rep. † xxx xxx xxx xxx xxx 931 961 1703 1691
-Slovenia xxx xxx xxx xxx 457 392 381 434 445
-Yugoslavia (former) 79 . . . . . . . . xxx xxx xxx xxx xxx
-Armenia † 80 xxx xxx xxx xxx 137.1 50.6 . . 125 108
-Azerbaijan 81 xxx xxx xxx xxx 364 383 193 160 141
-Belarus xxx xxx xxx xxx 254 361 363 143 110
-Georgia † 82 xxx xxx xxx xxx . . . . . . . . 108
-Moldova † ¶ 83 xxx xxx xxx xxx . . 26.2 23.2 29.2 27.9
-Russian Federation 84 xxx xxx xxx xxx 41938 36661 34657 22803 21533
-Ukraine § 85 xxx xxx xxx xxx . . 281 1239 1331 1283
-USSR 84 250003 231813 196111 . . xxx xxx xxx xxx xxx
-Austria 3044 3012 3046 3060 2971 2999 3012 2986 2959
-Belgium 7221 7109 6974 6876 5646 5361 5332 5223 5125
-Cyprus † 447 459 683 671 918 412 434 389 584
-Denmark 4047 3947 3950 4021 3947 3958 3859 3818 3831
-Finland 2291 2285 2325 2428 2472 2403 2363 2126 2355
-France 86 57700 58407 58149 58527 56686 56058 56346 53557 52272
-Germany 58230 58070 61199 56636 53864 48423 45159 44416 43549
-Greece 5880 5514 5574 5287 5494 5363 5455 5572 5906
-Iceland † 87 . . . . . . . . . . . . . . . . . .
-Ireland 773 764 867 909 899 906 927 934 985
-Italy 88 31739 31989 30768 31202 30305 30467 29714 27137 29911
-Luxembourg 89 158 144 150 166 173 158 174 170 175
-Malta † 36.2 36.0 31.7 32.3 38.5 40.9 43.9 43.9 47.0
-Netherlands 11748 11860 11526 11205 11141 10238 9873 9593 9648
-Norway 4253 4366 4402 4268 4626 4311 4532 4093 4149
-Portugal 2999 3148 3236 3336 3426 3316 3226 3465 3341
-Spain 90 16174 16087 16318 15683 15299 14907 15061 15180 14701
-Sweden 91 6335 6409 6529 6151 5977 5959 5946 5959 6037
-Switzerland † ¶ 92 7024 7161 7595 7332 7120 6322 6265 6338 5997
-UK 93 59419 59943 60028 60721 56716 54125 52636 49369 49074
+Country Notes,1988,1989,1990,1991,1992,1993,1994,1995,1996
+Albania,§,¶,66,.,.,226,232,164,126,115,110,102,92
+Bosnia-Herzegovina,†,¶,67,xxx,xxx,xxx,xxx,.,.,.,.,.,.,.,.,.,.
+Bulgaria,†,68,.,.,3684,2976,1611,1217,920,788,776,637
+Croatia,69,xxx,xxx,xxx,xxx,1844,2342,2632,2800,2624
+Czech Rep.,70,xxx,xxx,xxx,xxx,xxx,2223,2297,2202,2184
+Czechoslovakia,71,6391,9439,8234,5401,5479,xxx,xxx,xxx,xxx
+Estonia,72,xxx,xxx,xxx,xxx,46.2,62.2,79.1,78.4,76.3
+German DR,73,9885,10118,xxx,xxx,xxx,xxx,xxx,xxx,xxx
+Hungary,3342,2648,2291,1721,1662,1432,1418,1068,1004
+Kosovo,xxx,xxx,xxx,xxx,xxx,xxx,xxx,xxx,xxx
+Latvia,74,xxx,xxx,xxx,xxx,.,.,81.6,95.4,92.4,71.9
+Lithuania,xxx,xxx,xxx,xxx,.,.,146,78.9,82.1,91
+Macedonia,,FYR,75,xxx,xxx,xxx,xxx,.,.,.,.,.,.,.,.,140
+Montenegro,76,xxx,xxx,xxx,xxx,xxx,xxx,xxx,xxx,xxx
+Poland,77,7164,5820,6046,4257,4125,4521,4513,4541,4778
+Romania,7972,8490,3739,3878,3034,1832,2184,2130,2070
+Serbia,78,xxx,xxx,xxx,xxx,.,.,.,.,.,.,.,.,956
+Slovak Rep.,†,xxx,xxx,xxx,xxx,xxx,931,961,1703,1691
+Slovenia,xxx,xxx,xxx,xxx,457,392,381,434,445
+Yugoslavia,(former),79,.,.,.,.,.,.,.,.,xxx,xxx,xxx,xxx,xxx
+Armenia,†,80,xxx,xxx,xxx,xxx,137.1,50.6,.,.,125,108
+Azerbaijan,81,xxx,xxx,xxx,xxx,364,383,193,160,141
+Belarus,xxx,xxx,xxx,xxx,254,361,363,143,110
+Georgia,†,82,xxx,xxx,xxx,xxx,.,.,.,.,.,.,.,.,108
+Moldova,†,¶,83,xxx,xxx,xxx,xxx,.,.,26.2,23.2,29.2,27.9
+Russian Federation,84,xxx,xxx,xxx,xxx,41938,36661,34657,22803,21533
+Ukraine,§,85,xxx,xxx,xxx,xxx,.,.,281,1239,1331,1283
+USSR,84,250003,231813,196111,.,.,xxx,xxx,xxx,xxx,xxx
+Austria,3044,3012,3046,3060,2971,2999,3012,2986,2959
+Belgium,7221,7109,6974,6876,5646,5361,5332,5223,5125
+Cyprus,†,447,459,683,671,918,412,434,389,584
+Denmark,4047,3947,3950,4021,3947,3958,3859,3818,3831
+Finland,2291,2285,2325,2428,2472,2403,2363,2126,2355
+France,86,57700,58407,58149,58527,56686,56058,56346,53557,52272
+Germany,58230,58070,61199,56636,53864,48423,45159,44416,43549
+Greece,5880,5514,5574,5287,5494,5363,5455,5572,5906
+Iceland,†,87,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.
+Ireland,773,764,867,909,899,906,927,934,985
+Italy,88,31739,31989,30768,31202,30305,30467,29714,27137,29911
+Luxembourg,89,158,144,150,166,173,158,174,170,175
+Malta,†,36.2,36.0,31.7,32.3,38.5,40.9,43.9,43.9,47.0
+Netherlands,11748,11860,11526,11205,11141,10238,9873,9593,9648
+Norway,4253,4366,4402,4268,4626,4311,4532,4093,4149
+Portugal,2999,3148,3236,3336,3426,3316,3226,3465,3341
+Spain,90,16174,16087,16318,15683,15299,14907,15061,15180,14701
+Sweden,91,6335,6409,6529,6151,5977,5959,5946,5959,6037
+Switzerland,†,¶,92,7024,7161,7595,7332,7120,6322,6265,6338,5997
+UK,93,59419,59943,60028,60721,56716,54125,52636,49369,49074
