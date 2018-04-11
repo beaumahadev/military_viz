@@ -43,6 +43,7 @@ var height = 800;
 var width = 800;
 
 var warDataReal = [];
+var counter = -1;
 
 d3.csv("INFO3300_P2 - List of Wars.csv", function(data) {
   data.forEach(function(d) {
@@ -51,14 +52,19 @@ d3.csv("INFO3300_P2 - List of Wars.csv", function(data) {
       d.Finish = 2018;
     }
     d.duration = d.Finish - d.Start + 1;
+    d.companies = getCompanies(companySize);
+    d.id = counter;
+    counter++;
     warDataReal.push(d);
   });
+  warDataReal.shift();
+  console.log(warDataReal);
 });
 
-console.log(warDataReal);
 
 var companySize=Math.random() * (50 - 30) + 30;
-var warSize= warDataReal.length;
+//var warSize= warDataReal.length;
+var warSize = Math.random() * (50 - 30) + 30;
 var companyData=[];
 var warData=[];
 
@@ -77,9 +83,9 @@ function getCompanies(int){
 }
 
 //for testing purposes
-/*for(var i=0;i<warSize;i++){
+for(var i=0;i<warSize;i++){
   warData.push({name: "War"+i, id: i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
-}*/
+}
 
 var mainSVG = d3.select("#plot").append('svg')
 .attr("height", height).attr("width", width);
@@ -231,7 +237,7 @@ function scatterplot(rawdata, colors){
 }
 
 //pie construction from https://bl.ocks.org/mbostock/3887193
-function donutchartouter(data, dataReal) {
+function donutchartouter(data) {
 
 var outerWidth = 700;
 var outerHeight = 700;
@@ -254,7 +260,7 @@ var g = donutSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
 .attr('class', 'arc')
-.attr("id", function(d) { return d.data.name })
+.attr("id", function(d) {return d.data.name })
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
   console.log(d.data.name);
@@ -296,7 +302,7 @@ var textArc = d3.arc()
 //rotated text from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
 g.append('text')
 .text(function(d) {return d.data.name;})
-.attr('dy', '0.30em')
+.attr('dy', '0.25em')
 .attr('text-anchor','middle')
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
@@ -369,6 +375,7 @@ var innerColorScale = d3.scaleOrdinal()
     .domain([0, companySize]);
 
 donutchartinner(companyData);
+//donutchartouter(warDataReal);
 donutchartouter(warData);
 
 </script>
