@@ -246,8 +246,11 @@ var g = donutSVG.selectAll('.arc')
   console.log(g.select);
  // console.log(g.select('#'+d.data.name).selectAll("path").style("fill"));
   //g.selectAll("path").style("fill", function(d){d3.rgb(d3.select('#'+d.data.name).selectAll("path").style("fill")).darker(1)});
-  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
   
+  
+  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', .3);
+
+
   var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
