@@ -35,12 +35,12 @@ body{
 
 <script>
 
-var widthScatter=200;
-var heightScatter=200;
+var widthScatter=300;
+var heightScatter=300;
 var minProfit=1000;
 var maxProfit=1000000;
-var height = 700;
-var width = 700;
+var height = 800;
+var width = 800;
 
 var companySize=Math.random() * (50 - 30) + 30;
 var warSize= Math.random() * (50 - 30) + 30;
@@ -211,8 +211,8 @@ function scatterplot(rawdata, colors){
 function donutchartouter(data) {
 
 
-var outerWidth = 500;
-var outerHeight = 500;
+var outerWidth = 700;
+var outerHeight = 700;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
@@ -270,8 +270,8 @@ g.append('path')
 }
 
 function donutchartinner(data) {
-var innerWidth = 300;
-var innerHeight = 300;
+var innerWidth = 400;
+var innerHeight = 400;
 var innerRadius = Math.min(innerWidth, innerHeight) / 2;
 
 var arc = d3.arc()
