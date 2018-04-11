@@ -42,8 +42,23 @@ var maxProfit=1000000;
 var height = 800;
 var width = 800;
 
+var warDataReal = [];
+
+d3.csv("INFO3300_P2 - List of Wars.csv", function(data) {
+  data.forEach(function(d) {
+    d.name = d["NameofConflict"];
+    if (d.Finish === "Ongoing") {
+      d.Finish = 2018;
+    }
+    d.duration = d.Finish - d.Start + 1;
+    warDataReal.push(d);
+  });
+});
+
+console.log(warDataReal);
+
 var companySize=Math.random() * (50 - 30) + 30;
-var warSize= Math.random() * (50 - 30) + 30;
+var warSize= warDataReal.length;
 var companyData=[];
 var warData=[];
 
@@ -61,9 +76,10 @@ function getCompanies(int){
   return companies;
 }
 
-for(var i=0;i<warSize;i++){
+//for testing purposes
+/*for(var i=0;i<warSize;i++){
   warData.push({name: "War"+i, id: i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
-}
+}*/
 
 var mainSVG = d3.select("#plot").append('svg')
 .attr("height", height).attr("width", width);
@@ -214,8 +230,8 @@ function scatterplot(rawdata, colors){
     return force
 }
 
-
-function donutchartouter(data) {
+//pie construction from https://bl.ocks.org/mbostock/3887193
+function donutchartouter(data, dataReal) {
 
 var outerWidth = 700;
 var outerHeight = 700;
@@ -277,23 +293,25 @@ var textArc = d3.arc()
 .outerRadius(outerRadius + 25)
 .innerRadius(outerRadius + 15);
 
-//from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
+//rotated text from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
 g.append('text')
-.text(function(d) {console.log(d); return d.data.name;})
+.text(function(d) {return d.data.name;})
 .attr('dy', '0.30em')
 .attr('text-anchor','middle')
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
-      return "translate(" + textArc.centroid(d)[0] + "," + textArc.centroid(d)[1] + ") rotate(-90) rotate(" + (midAngle * 180/Math.PI) + ")"; });
+      return "translate(" + textArc.centroid(d)[0] + "," + textArc.centroid(d)[1] + ") rotate(-90) rotate(" + (midAngle * 180/Math.PI) + ")"; })
+.style("fill", "#cdcdcd");
 
 var circleArc = d3.arc()
 .outerRadius(outerRadius - 50)
 .innerRadius(outerRadius - 60);
 
 g.append('circle')
-.attr("cx", function(d) {console.log(circleArc.centroid(d));return circleArc.centroid(d)[0];})
+.attr("cx", function(d) {return circleArc.centroid(d)[0];})
 .attr("cy", function(d) {return circleArc.centroid(d)[1];})
-.attr("r", 2);
+.attr("r", 2)
+.style("fill", "#cdcdcd");
 
 }
 
@@ -339,9 +357,10 @@ var circleArc = d3.arc()
 .innerRadius(innerRadius);
 
 g.append('circle')
-.attr("cx", function(d) {console.log(circleArc.centroid(d));return circleArc.centroid(d)[0];})
+.attr("cx", function(d) {return circleArc.centroid(d)[0];})
 .attr("cy", function(d) {return circleArc.centroid(d)[1];})
-.attr("r", 2);
+.attr("r", 2)
+.style("fill", "#cdcdcd");
 
 }
 
@@ -353,7 +372,5 @@ donutchartinner(companyData);
 donutchartouter(warData);
 
 </script>
-
-
 </body>
 </html>
