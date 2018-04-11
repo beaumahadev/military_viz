@@ -99,7 +99,7 @@ function scatterplot(rawdata, colors){
     totalProfit+=data[d].profit;
   }
 
-  var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([3, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
+  var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([8, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
 
 
   var numNodes = data.length;
@@ -269,9 +269,23 @@ var g = donutSVG.selectAll('.arc')
   }
 });
 
+
 g.append('path')
 .attr('d', arc)
 .style('fill', '#cdcdcd');
+
+var textArc = d3.arc()
+.outerRadius(outerRadius + 25)
+.innerRadius(outerRadius + 15)
+.cornerRadius(0.02);
+
+g.append('text')
+.text(function(d) {console.log(d); return d.data.name;})
+.attr('dy', '0.30em')
+.attr('text-anchor','middle')
+.attr("transform", function(d) { 
+      var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
+      return "translate(" + textArc.centroid(d)[0] + "," + textArc.centroid(d)[1] + ") rotate(-90) rotate(" + (midAngle * 180/Math.PI) + ")"; });
 
 }
 
