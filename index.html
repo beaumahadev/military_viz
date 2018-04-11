@@ -269,16 +269,15 @@ var g = donutSVG.selectAll('.arc')
   }
 });
 
-
 g.append('path')
 .attr('d', arc)
 .style('fill', '#cdcdcd');
 
 var textArc = d3.arc()
 .outerRadius(outerRadius + 25)
-.innerRadius(outerRadius + 15)
-.cornerRadius(0.02);
+.innerRadius(outerRadius + 15);
 
+//from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
 g.append('text')
 .text(function(d) {console.log(d); return d.data.name;})
 .attr('dy', '0.30em')
@@ -286,6 +285,15 @@ g.append('text')
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
       return "translate(" + textArc.centroid(d)[0] + "," + textArc.centroid(d)[1] + ") rotate(-90) rotate(" + (midAngle * 180/Math.PI) + ")"; });
+
+var circleArc = d3.arc()
+.outerRadius(outerRadius - 50)
+.innerRadius(outerRadius - 60);
+
+g.append('circle')
+.attr("cx", function(d) {console.log(circleArc.centroid(d));return circleArc.centroid(d)[0];})
+.attr("cy", function(d) {return circleArc.centroid(d)[1];})
+.attr("r", 2);
 
 }
 
@@ -326,64 +334,16 @@ g.append('path')
   return d.data.color;
   });
 
-}
+var circleArc = d3.arc()
+.outerRadius(innerRadius + 5)
+.innerRadius(innerRadius);
 
-function addPaths(wardata, countrydata) {
-
-var outerPathRadius = 630 / 2;
-var innerPathRadius = 420 / 2;
-
-var outerArc = d3.arc()
-.outerRadius(outerPathRadius - 10)
-.innerRadius(outerPathRadius - 20);
-
-var innerArc = d3.arc()
-.outerRadius(innerPathRadius - 10)
-.innerRadius(innerPathRadius - 20);
-
-var outerPie = d3.pie()
-.sort(null)
-.value(function (d) {return d.duration})
-.padAngle(0.02);
-
-var innerPie = d3.pie()
-.sort(null)
-.value(10)
-.padAngle(.02);
-
-var outerPathSVG = mainSVG.append('g')
-.attr('height', outerPathRadius).attr('width', outerPathRadius)
-.attr("transform", "translate(" + (width/2 - outerPathRadius) + "," + (height/2 - outerPathRadius) + ")" );
-
-var innerPathSVG = mainSVG.append('g')
-.attr('height', innerPathRadius).attr('width', innerPathRadius)
-.attr("transform", "translate(" + (width/2 - innerPathRadius) + "," + (height/2 - innerPathRadius) + ")" );
-
-var outerG = outerPathSVG.selectAll('.arc')
-.data(outerPie(wardata))
-.enter().append('g')
-.attr('class', 'arc')
-.attr("transform", "translate(" + outerPathRadius + "," + outerPathRadius + ")" );
-
-outerG.append('circle')
-.attr("cx", function(d) {console.log(outerArc.centroid(d));return outerArc.centroid(d)[0];})
-.attr("cy", function(d) {return outerArc.centroid(d)[1];})
-.attr("r", 2);
-
-var innerG = innerPathSVG.selectAll('.arc')
-.data(innerPie(companyData))
-.enter().append('g')
-.attr('class', 'arc')
-.attr("transform", "translate(" + innerPathRadius + "," + innerPathRadius + ")" );
-
-innerG.append('circle')
-.attr("cx", function(d) {console.log(innerArc.centroid(d));return innerArc.centroid(d)[0];})
-.attr("cy", function(d) {return innerArc.centroid(d)[1];})
+g.append('circle')
+.attr("cx", function(d) {console.log(circleArc.centroid(d));return circleArc.centroid(d)[0];})
+.attr("cy", function(d) {return circleArc.centroid(d)[1];})
 .attr("r", 2);
 
 }
-
-
 
 var innerColorScale = d3.scaleOrdinal()
     .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
@@ -391,9 +351,6 @@ var innerColorScale = d3.scaleOrdinal()
 
 donutchartinner(companyData);
 donutchartouter(warData);
-addPaths(warData);
-
-
 
 </script>
 
