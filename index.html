@@ -79,10 +79,10 @@ function scatterplot(rawdata, colors){
       }
     }
   }
-
+  var padding=20;
   var scatterSVG = mainSVG.append("svg")
     .attr("id", function(d) { return "scatterSVG"})
-    .attr("height", widthScatter).attr("width", heightScatter)
+    .attr("height", widthScatter+padding).attr("width", heightScatter+padding)
     .attr("transform", "translate(" + (width/2 - widthScatter/2) + "," + (height/2 - heightScatter/2) + ")" );
   
   var tooldiv = d3.select("body").append("div") 
@@ -109,6 +109,10 @@ function scatterplot(rawdata, colors){
     .bounds([[0, 0], [widthScatter, heightScatter]])
     .size(function (d) { return [d.size, d.size] })
 
+  var boxForce2 = boundedBox()
+    .bounds([[0, 0], [widthScatter*1.5, heightScatter*1.5]])
+    .size(function (d) { return [d.size, d.size] })
+
   var simulation = d3.forceSimulation(nodes)
     .force('charge', d3.forceManyBody().strength(5))
     .force('center', d3.forceCenter(widthScatter / 2, heightScatter / 2))
@@ -116,6 +120,7 @@ function scatterplot(rawdata, colors){
       return d.radius
     }))
     .force('box', boxForce)
+    .force('box', boxForce2)
     .on('tick', ticked);
 
   function ticked() {
@@ -296,6 +301,7 @@ var g  = innerSVG.selectAll('.arc')
 .attr("id", function(d) { return d.data.name })
 .on("mouseover", function(d) {
   console.log(d.data.name);
+  console.log( this.getBoundingClientRect());
 }) ;
 
 g.append('path')
@@ -306,6 +312,7 @@ g.append('path')
   });
 
 }
+
 
 
 var innerColorScale = d3.scaleOrdinal()
