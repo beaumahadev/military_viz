@@ -321,6 +321,7 @@ var textArc = d3.arc()
 g.append('text')
 .text(function(d) {return d.data.name;})
 .attr('dy', '0.25em')
+.style("font-size", "10px")
 .attr('text-anchor','middle')
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
