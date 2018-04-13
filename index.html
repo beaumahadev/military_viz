@@ -12,7 +12,6 @@ div.donut{
   justify-content: left;
  }
 div.infobox{
-  display: block;
   top: 20;
   right: 20;
   width: 300px;
@@ -165,7 +164,7 @@ function scatterplot(rawdata, colors){
     .size(function (d) { return [d.size, d.size] })
 
   var simulation = d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody().strength(5))
+    .force('charge', d3.forceManyBody().strength(3))
     .force('center', d3.forceCenter(widthScatter / 2, heightScatter / 2))
     .force('collision', d3.forceCollide().radius(function(d) {
       return d.radius
@@ -266,8 +265,8 @@ function scatterplot(rawdata, colors){
 //pie construction from https://bl.ocks.org/mbostock/3887193
 function donutchartouter(data) {
 
-var outerWidth = 600;
-var outerHeight = 600;
+var outerWidth = 400;
+var outerHeight = 400;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
