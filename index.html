@@ -39,8 +39,8 @@ var widthScatter=250;
 var heightScatter=250;
 var minProfit=1000;
 var maxProfit=1000000;
-var height = 800;
-var width = 800;
+var height = 1100;
+var width = 1100;
 
 var warDataReal = [];
 var counter = -1;
@@ -314,15 +314,20 @@ g.append('path')
 .style('fill', '#cdcdcd');
 
 var textArc = d3.arc()
-.outerRadius(outerRadius + 25)
-.innerRadius(outerRadius + 15);
+.outerRadius(outerRadius + 5)
+.innerRadius(outerRadius);
 
 //rotated text from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
 g.append('text')
 .text(function(d) {return d.data.name;})
 .attr('dy', '0.25em')
 .style("font-size", "10px")
-.attr('text-anchor','middle')
+.attr("text-anchor", function(d) {
+  var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
+  console.log(midAngle);
+
+  if (midAngle > Math.PI) return "end";
+  else return "start";})
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
       return "translate(" + textArc.centroid(d)[0] + "," + textArc.centroid(d)[1] + ") rotate(-90) rotate(" + (midAngle * 180/Math.PI) + ")"; })
