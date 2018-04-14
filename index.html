@@ -54,14 +54,14 @@ var width = 1100;
 
 var warDataReal = [];
 var counter = -1;
-var countries = ["China", "Kuwait", "Egypt", "Saudi Arabia", "France", "Italy", "Canada", "United States", "Australia", "Qatar", "Israel", "Turkey", "Georgia", "Russia", "Ukraine", "Romania", "Djibouti", "Pakistan", "Iran", "Uganda", "Rwanda", "Albania", "Germany", "Congo Dem. Rep.", "Morocoo", "Oman", "UAE", "Yemen", "Armenia", "Greece", "Norway", "Portugal", "Spain", "Belgium", "Iraq", "Qatar", "Burundi", "Angola", "India", "Namibia", "Israel"];
+const countrySet = new Set(["China", "Kuwait", "Egypt", "Saudi Arabia", "France", "Italy", "Canada", "United States", "Australia", "Qatar", "Israel", "Turkey", "Georgia", "Russia", "Ukraine", "Romania", "Djibouti", "Pakistan", "Iran", "Uganda", "Rwanda", "Albania", "Germany", "Congo Dem. Rep.", "Morocoo", "Oman", "UAE", "Yemen", "Armenia", "Greece", "Norway", "Portugal", "Spain", "Belgium", "Iraq", "Qatar", "Burundi", "Angola", "India", "Namibia", "Israel"]);
 
 var innerColorScale = d3.scaleOrdinal()
     .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
-    .domain([0, companySize]);
+    .domain([0, countrySet.length]);
 
 d3.queue()
-        .defer(d3.csv, "data/wars.csv")
+        .defer(d3.csv, "wars_final.csv")
         .await(callback)
         function callback (error, data) {
           data.forEach(function(d) {
@@ -70,7 +70,22 @@ d3.queue()
               d.Finish = 2018;
             }
             d.duration = d.Finish - d.Start + 1;
-            d.companies = getCompanies(companySize);
+            d.countries = [];
+            //d.companies = getCompanies(companySize);
+            var countryData = d["Belligerents"].split(",");
+            for (var i = 0; i < countryData.length; i++) {
+              var str = countryData[i].replace(/\s+/g, '');
+              if (countrySet.has(str)) {
+                d.countries.push(str);
+              }
+            }
+            var countryData2 = d["Countries"].split(",");
+            for (var i = 0; i < countryData2.length; i++) {
+              var str = countryData2[i].replace(/\s+/g, '');
+              if (countrySet.has(str) && !d.countries.includes(str)) {
+                d.countries.push(str);
+              }
+            }
             d.id = counter;
             d.desc = d["Description"];
             counter++;
@@ -78,10 +93,9 @@ d3.queue()
           });
           warDataReal.shift();
           console.log(warDataReal);
-          donutchartinner(companyData);
+          //donutchartinner(companyData);
           donutchartouter(warDataReal);
           //donutchartouter(warData);
-
         }
 
 d3.csv("data/wars.csv", function(data) {
