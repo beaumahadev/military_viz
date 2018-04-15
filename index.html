@@ -135,12 +135,25 @@ var height = 1100;
 var width = 1100;
 
 var warDataReal = [];
+var spendingData = [];
+var minSpending = 100000000;
+var maxSpending = 0;
+var maxCountry = "";
+var maxTotal = 0;
 var counter = -1;
-const countrySet = new Set(["China", "Kuwait", "Egypt", "Saudi Arabia", "France", "Italy", "Canada", "United States", "Australia", "Qatar", "Israel", "Turkey", "Georgia", "Russia", "Ukraine", "Romania", "Djibouti", "Pakistan", "Iran", "Uganda", "Rwanda", "Albania", "Germany", "Congo Dem. Rep.", "Morocoo", "Oman", "UAE", "Yemen", "Armenia", "Greece", "Norway", "Portugal", "Spain", "Belgium", "Iraq", "Qatar", "Burundi", "Angola", "India", "Namibia", "Israel"]);
+//removed Ukraine, Yemen, Israel, Kuwait, Japan, 
+const countrySet = new Set(["Angola","Burundi", "Congo","Djibouti", "Rwanda","Uganda","SouthAfrica","Sudan", "UnitedStates","Canada","Mexico","Brazil", "China", "Philippines", "SouthKorea","Pakistan", "Afghanistan", "India", "Australia","Iran","Iraq", "Kuwait", "Israel", "Oman", "UAE", "Yemen", "SaudiArabia", "Qatar", "Turkey", "Georgia", "Russia", "France", "Germany", "Ukraine", "Italy", "UK", "Spain", "Romania", "Albania"]);
 
 var innerColorScale = d3.scaleOrdinal()
     .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
     .domain([0, countrySet.length]);
+
+var colorToCountry = new Map([["Africa", "#468B81"], ["Americas", "#B9D46E"], ["Asia", "#E3CE6B"], ["Oceania", "#DE6D51"], ["Middle East", "#C5424E"], ["Europe", "#61B7FC"]]);
+
+console.log(colorToCountry);
+
+var mainSVG = d3.select("#donut").append('svg')
+.attr("height", height).attr("width", width);
 
 d3.queue()
         .defer(d3.csv, "wars_final.csv")
@@ -149,7 +162,7 @@ d3.queue()
           data.forEach(function(d) {
             d.name = d["Name of Conflict"];
             if (d.Finish === "Ongoing") {
-              d.Finish = 2018;
+              d.Finish = 2016;
             }
             d.duration = d.Finish - d.Start + 1;
             d.countries = [];
@@ -172,26 +185,48 @@ d3.queue()
             d.desc = d["Description"];
             counter++;
             warDataReal.push(d);
+            //warDataReal[d["Name of Conflict"]] = d;
           });
           warDataReal.shift();
-          console.log(warDataReal);
-          donutchartinner(companyData);
           donutchartouter(warDataReal);
           //donutchartouter(warData);
         }
 
-d3.csv("data/wars.csv", function(data) {
-  
-});
+d3.queue()
+        .defer(d3.csv, "spending_final.csv")
+        .await(callback2)
+        function callback2 (error, data) {
+          data.forEach(function(d) {
+            d.name = d["Country "].replace(/\s+/g, '');
+            d.region = d["Region"];
+            var sum = 0;
+            for (var i = 1990; i < 2017; i++) {
+              var num = Number(d[i]);
+              d.i = num;
+              if (num != -1) sum += Math.floor(num);
+              if (num > maxSpending) maxSpending = num;
+              if (num < minSpending && num != -1) minSpending = num;
+            }
+            d.total = sum;
+            if (sum > maxTotal) {
+              maxTotal = sum;
+              maxCountry = d.name;
+            }
+            spendingData[d["Country "].replace(/\s+/g, '')] = d;
+          });
+          console.log(spendingData);
+          console.log(maxTotal);
+          console.log(maxCountry);
+          donutchartinner(countrySet);
+        }
 
-
-var companySize=Math.random() * (50 - 30) + 30;
+//var companySize=Math.random() * (50 - 30) + 30;
 //var warSize= warDataReal.length;
-var warSize = Math.random() * (50 - 30) + 30;
-var companyData=[];
-var warData=[];
+//var warSize = Math.random() * (50 - 30) + 30;
+//var companyData=[];
+//var warData=[];
 
-for(var i=0;i<companySize;i++){
+/*for(var i=0;i<companySize;i++){
   companyData.push({name: "Company"+ i, id: i, profit: Math.random() * (maxProfit - minProfit) + minProfit});
 }
 
@@ -208,22 +243,27 @@ function getCompanies(int){
 //for testing purposes
 for(var i=0;i<warSize;i++){
   warData.push({name: "War"+i, id: i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
-}
-
-var mainSVG = d3.select("#donut").append('svg')
-.attr("height", height).attr("width", width);
+}*/
 
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
-function scatterplot(rawdata, colors){
+function scatterplot(rawdata, start, end){
+  //rawdata in cludes list of countries
+  var data=[];
 
-  var data=[]
-  for(var d in rawdata){
-    for(var c in companyData){
-      if(rawdata[d] == companyData[c].name){
-        data.push(companyData[c]);
-      }
+  for (var i = 0; i < rawdata.length; i++) {
+    var country = rawdata[i];
+    //console.log(spendingData[country]);
+    var totalInterval = 0;
+    for (var j = Number(start); j <= Number(end); j++) {
+      if (Number(spendingData[country][j]) != -1)
+        //console.log(Number(spendingData[country][j]));
+        totalInterval += Number(spendingData[country][j]);
     }
+    var color = colorToCountry.get(spendingData[country]["Region"]);
+    data.push({country, totalInterval, color});
   }
+
+  console.log(data);
 
   var padding=20;
   var scatterSVG = mainSVG.append("g")
@@ -236,35 +276,36 @@ function scatterplot(rawdata, colors){
     .attr("class", "tooltip")       
     .style("opacity", 0);
 
+  var averageSpending = (minSpending + maxSpending)/2;
 
-  var averageProfit= (minProfit+maxProfit)/2;
-  var totalProfit=0;
-
+  var totalSpending = 0;
   for(d in data){
-    totalProfit+=data[d].profit;
+    totalSpending+=data[d]["totalInterval"];
   }
 
-  var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([8, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
+  /*var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([8, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);*/
+
+  var rScale = d3.scaleSqrt().domain([minSpending, totalSpending]).range([8, 70]);
 
 
   var numNodes = data.length;
   var nodes = d3.range(numNodes).map(function(d) {
-    return {radius: rScale(data[d].profit), color: data[d].color, name: data[d].name, profit: data[d].profit}
-  })
+    return {radius: rScale(data[d].totalInterval), color: data[d].color, name: data[d].country, total: data[d].totalInterval}
+  });
 
   var boxForce = boundedBox()
     .bounds([[0, 0], [widthScatter, heightScatter]])
     .size(function (d) { return [d.size, d.size] })
 
   var boxForce2 = boundedBox()
-    .bounds([[0, 0], [widthScatter*1.5, heightScatter*1.5]])
+    .bounds([[0, 0], [widthScatter*1.25, heightScatter*1.25]])
     .size(function (d) { return [d.size, d.size] })
 
   var simulation = d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody().strength(3))
+    .force('charge', d3.forceManyBody().strength(5))
     .force('center', d3.forceCenter(widthScatter / 2, heightScatter / 2))
     .force('collision', d3.forceCollide().radius(function(d) {
-      return d.radius
+      return d.radius;
     }))
     .force('box', boxForce)
     .force('box', boxForce2)
@@ -280,6 +321,12 @@ function scatterplot(rawdata, colors){
       .attr('r', function(d) {
         return d.radius;
       })
+      .style("stroke", function (d) {
+        if (d.name == "UnitedStates") return "green";
+      })
+      .style("stroke-width",function (d) {
+        if (d.name == "UnitedStates") return 3;
+      })
       .style("fill", function (d) {
         return d.color;
             })
@@ -294,7 +341,7 @@ function scatterplot(rawdata, colors){
         tooldiv.transition()    
            .duration(200)    
            .style("opacity", .9);    
-        tooldiv .html(d.name + "<br/>"  + d.profit.toFixed(2))  
+        tooldiv .html(d.name + "<br/>"  + d.total.toFixed(2))  
             .style("left", (d3.event.pageX) + "px")   
             .style("top", (d3.event.pageY - 28) + "px");  
       })          
@@ -305,8 +352,6 @@ function scatterplot(rawdata, colors){
       });
 
     u.exit().remove()
-
-    //.attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
   }
 }
   //Code for bounding box taken from https://bl.ocks.org/cmgiven/547658968d365bcc324f3e62e175709b
@@ -362,8 +407,8 @@ function scatterplot(rawdata, colors){
 //pie construction from https://bl.ocks.org/mbostock/3887193
 function donutchartouter(data) {
 
-var outerWidth = 400;
-var outerHeight = 400;
+var outerWidth = 700;
+var outerHeight = 700;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
@@ -380,7 +425,8 @@ var donutSVG = mainSVG.append('g')
 .attr('height', height).attr('width', width);
 
 var infodiv;
-
+var isActive = false;
+var previous;
 var g = donutSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
@@ -389,7 +435,10 @@ var g = donutSVG.selectAll('.arc')
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
   console.log(d.data.name);
-  console.log(g.select);
+  console.log(d.data.Start);
+  //var active = isActive ? false : true,
+    //newOpacity = active ? 0.3 : 1;
+  //console.log(g.select);
  // console.log(g.select('#'+d.data.name).selectAll("path").style("fill"));
   //g.selectAll("path").style("fill", function(d){d3.rgb(d3.select('#'+d.data.name).selectAll("path").style("fill")).darker(1)});
   
@@ -398,28 +447,32 @@ var g = donutSVG.selectAll('.arc')
            .duration(200)    
            .style("visibility", "visible"); */
 
-  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', .3);
+  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
 
+  scatterplot(d.data.countries, d.data.Start, d.data.Finish);
+ 
 
-  var colors = [];
+  for (var i in d.data.countries) {
+    console.log(d.data.countries[i]);
+    var arc = d3.select('g#' + d.data.countries[i]);
+    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
+  }
+  /*var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
     var currentcolor=arc.selectAll("path").style("fill");
     colors.push({name: d.data.companies[i], color: currentcolor});
-    arc
-      .style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
+    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
    
-  }
-  scatterplot(d.data.companies, colors);
+  }*/
 })
 .on("mouseout", function(d) {
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   var scatter= d3.select('#scatterSVG').remove();
-  for(var i in d.data.companies){
-    var arc = d3.select('g#' + d.data.companies[i]);
-    var currentcolor=arc.selectAll("path").style("fill");
-    arc
-      .style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
+  for(var i in d.data.countries){
+    var arc = d3.select('g#' + d.data.countries[i]);
+    //var currentcolor=arc.selectAll("path").style("fill");
+    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   }
 });
 
@@ -437,10 +490,11 @@ g.append('text')
 .attr('dy', '0.25em')
 .style("font-size", "10px")
 .attr("text-anchor", function(d) {
-  var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
+  var midAngle = d.endAngle <= Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
   console.log(midAngle);
 
-  if (midAngle > Math.PI) return "end";
+  if (midAngle >= Math.PI) return "end";
+  else if (d.data.name === "War on Terror") return "end";
   else return "start";})
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
@@ -451,23 +505,33 @@ var circleArc = d3.arc()
 .outerRadius(outerRadius - 50)
 .innerRadius(outerRadius - 60);
 
-g.append('circle')
+/*g.append('circle')
 .attr("cx", function(d) {return circleArc.centroid(d)[0];})
 .attr("cy", function(d) {return circleArc.centroid(d)[1];})
 .attr("r", 2)
-.style("fill", "#cdcdcd");
+.style("fill", "#cdcdcd");*/
 
 }
 
 function donutchartinner(data) {
-var innerWidth = 350;
-var innerHeight = 350;
+var innerWidth = 400;
+var innerHeight = 400;
 var innerRadius = Math.min(innerWidth, innerHeight) / 2;
 
 var arc = d3.arc()
 .outerRadius(innerRadius - 20)
 .innerRadius(innerRadius - 35)
 .cornerRadius(2);
+
+var spendingDataArray = [];
+data.forEach(function(d) {
+  console.log(d);
+  spendingDataArray.push({"country": d, "data": spendingData[d]});
+});
+console.log(spendingDataArray);
+/*var spendingDataArray = Object.keys(data).map(function(key) {
+  return {"country": key, "data": data[key]}
+});*/
 
 var pie = d3.pie()
 .sort(null)
@@ -479,31 +543,46 @@ var innerSVG = mainSVG.append('g')
 .attr("transform", "translate(" + (width/2 - innerWidth/2) + "," + (height/2 - innerHeight/2) + ")" );
 
 var g  = innerSVG.selectAll('.arc')
-.data(pie(data))
+.data(pie(spendingDataArray))
 .enter().append('g')
 .attr('class', 'arc')
 .attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" )
-.attr("id", function(d) { return d.data.name })
+.attr("id", function(d) { return d.data.data.name; })
 .on("mouseover", function(d) {
-  console.log(d.data.name);
+  console.log(d.data.data.name);
   console.log( this.getBoundingClientRect());
 }) ;
 
 g.append('path')
 .attr('d', arc)
 .style('fill', function(d){
-  d.data.color = innerColorScale(d.data.id);
-  return d.data.color;
+  return colorToCountry.get(d.data.data.region);
   });
 
 var circleArc = d3.arc()
 .outerRadius(innerRadius + 5)
 .innerRadius(innerRadius);
 
-g.append('circle')
+/*g.append('circle')
 .attr("cx", function(d) {return circleArc.centroid(d)[0];})
 .attr("cy", function(d) {return circleArc.centroid(d)[1];})
 .attr("r", 2)
+.style("fill", "#cdcdcd");*/
+
+//rotated text from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
+g.append('text')
+.text(function(d) {return d.data.data.name;})
+.attr('dy', '0.25em')
+.style("font-size", "10px")
+.attr("text-anchor", function(d) {
+  var midAngle = d.endAngle <= Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
+  console.log(midAngle);
+
+  if (midAngle >= Math.PI) return "end";
+  else return "start";})
+.attr("transform", function(d) { 
+      var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
+      return "translate(" + circleArc.centroid(d)[0] + "," + circleArc.centroid(d)[1] + ") rotate(-90) rotate(" + (midAngle * 180/Math.PI) + ")"; })
 .style("fill", "#cdcdcd");
 
 }
