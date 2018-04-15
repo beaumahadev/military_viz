@@ -59,13 +59,14 @@ var maxSpending = 0;
 var maxCountry = "";
 var maxTotal = 0;
 var counter = -1;
-const countrySet = new Set(["Angola","Burundi", "Congo","Djibouti", "Rwanda","Uganda","SouthAfrica","Sudan", "UnitedStates","Canada","Mexico","Venezuela","Brazil", "China", "Philippines","Japan", "SouthKorea","Pakistan", "Afghanistan", "India", "Australia","Iran","Iraq", "Kuwait", "Israel", "Oman", "UAE", "Yemen", "SaudiArabia", "Qatar", "Turkey", "Georgia", "Russia", "France", "Germany", "Ukraine", "Italy", "UK", "Spain", "Romania", "Albania"]);
+//removed Ukraine, Yemen, Israel, Kuwait, Japan, 
+const countrySet = new Set(["Angola","Burundi", "Congo","Djibouti", "Rwanda","Uganda","SouthAfrica","Sudan", "UnitedStates","Canada","Mexico","Brazil", "China", "Philippines", "SouthKorea","Pakistan", "Afghanistan", "India", "Australia","Iran","Iraq", "Kuwait", "Israel", "Oman", "UAE", "Yemen", "SaudiArabia", "Qatar", "Turkey", "Georgia", "Russia", "France", "Germany", "Ukraine", "Italy", "UK", "Spain", "Romania", "Albania"]);
 
 var innerColorScale = d3.scaleOrdinal()
     .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
     .domain([0, countrySet.length]);
 
-var colorToCountry = new Map([["Africa", "#468B81"], ["Americas", "#B9D46E"], ["Asia", "#E3CE6B"], ["Oceania", "#DE6D51"], ["Middle East", "#C5424E"], ["Europe", "#B9D46E"]]);
+var colorToCountry = new Map([["Africa", "#468B81"], ["Americas", "#B9D46E"], ["Asia", "#E3CE6B"], ["Oceania", "#DE6D51"], ["Middle East", "#C5424E"], ["Europe", "#61B7FC"]]);
 
 console.log(colorToCountry);
 
@@ -106,7 +107,6 @@ d3.queue()
           });
           warDataReal.shift();
           //console.log(warDataReal);
-          //donutchartinner(companyData);
           donutchartouter(warDataReal);
           //donutchartouter(warData);
         }
@@ -136,6 +136,7 @@ d3.queue()
           console.log(spendingData);
           console.log(maxTotal);
           console.log(maxCountry);
+          donutchartinner(countrySet);
         }
 
 //var companySize=Math.random() * (50 - 30) + 30;
@@ -198,7 +199,6 @@ function scatterplot(rawdata, start, end){
 
   var totalSpending = 0;
   for(d in data){
-    console.log(d);
     totalSpending+=data[d]["totalInterval"];
   }
 
@@ -209,7 +209,6 @@ function scatterplot(rawdata, start, end){
 
   var numNodes = data.length;
   var nodes = d3.range(numNodes).map(function(d) {
-    console.log(data[d]);
     return {radius: rScale(data[d].totalInterval), color: data[d].color, name: data[d].country, total: data[d].totalInterval}
   });
 
@@ -369,7 +368,13 @@ var g = donutSVG.selectAll('.arc')
 
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
   scatterplot(d.data.countries, d.data.Start, d.data.Finish);
+ 
 
+  for (var i in d.data.countries) {
+    console.log(d.data.countries[i]);
+    var arc = d3.select('g#' + d.data.countries[i]);
+    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
+  }
   /*var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
@@ -382,11 +387,10 @@ var g = donutSVG.selectAll('.arc')
 .on("mouseout", function(d) {
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   var scatter= d3.select('#scatterSVG').remove();
-  for(var i in d.data.companies){
-    var arc = d3.select('g#' + d.data.companies[i]);
-    var currentcolor=arc.selectAll("path").style("fill");
-    arc
-      .style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
+  for(var i in d.data.countries){
+    var arc = d3.select('g#' + d.data.countries[i]);
+    //var currentcolor=arc.selectAll("path").style("fill");
+    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   }
 });
 
@@ -428,14 +432,24 @@ g.append('circle')
 }
 
 function donutchartinner(data) {
-var innerWidth = 350;
-var innerHeight = 350;
+var innerWidth = 400;
+var innerHeight = 400;
 var innerRadius = Math.min(innerWidth, innerHeight) / 2;
 
 var arc = d3.arc()
 .outerRadius(innerRadius - 20)
 .innerRadius(innerRadius - 35)
 .cornerRadius(2);
+
+var spendingDataArray = [];
+data.forEach(function(d) {
+  console.log(d);
+  spendingDataArray.push({"country": d, "data": spendingData[d]});
+});
+console.log(spendingDataArray);
+/*var spendingDataArray = Object.keys(data).map(function(key) {
+  return {"country": key, "data": data[key]}
+});*/
 
 var pie = d3.pie()
 .sort(null)
@@ -447,21 +461,20 @@ var innerSVG = mainSVG.append('g')
 .attr("transform", "translate(" + (width/2 - innerWidth/2) + "," + (height/2 - innerHeight/2) + ")" );
 
 var g  = innerSVG.selectAll('.arc')
-.data(pie(data))
+.data(pie(spendingDataArray))
 .enter().append('g')
 .attr('class', 'arc')
 .attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" )
-.attr("id", function(d) { return d.data.name })
+.attr("id", function(d) { return d.data.data.name; })
 .on("mouseover", function(d) {
-  console.log(d.data.name);
+  console.log(d.data.data.name);
   console.log( this.getBoundingClientRect());
 }) ;
 
 g.append('path')
 .attr('d', arc)
 .style('fill', function(d){
-  d.data.color = innerColorScale(d.data.id);
-  return d.data.color;
+  return colorToCountry.get(d.data.data.region);
   });
 
 var circleArc = d3.arc()
