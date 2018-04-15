@@ -65,6 +65,13 @@ var innerColorScale = d3.scaleOrdinal()
     .range(["#468B81","#B9D46E","#E3CE6B","#DE6D51","#C5424E","#B9D46E","#E3CE6B","#DE6D51"])
     .domain([0, countrySet.length]);
 
+var colorToCountry = new Map([["Africa", "#468B81"], ["Americas", "#B9D46E"], ["Asia", "#E3CE6B"], ["Oceania", "#DE6D51"], ["Middle East", "#C5424E"], ["Europe", "#B9D46E"]]);
+
+console.log(colorToCountry);
+
+var mainSVG = d3.select("#donut").append('svg')
+.attr("height", height).attr("width", width);
+
 d3.queue()
         .defer(d3.csv, "wars_final.csv")
         .await(callback)
@@ -72,7 +79,7 @@ d3.queue()
           data.forEach(function(d) {
             d.name = d["Name of Conflict"];
             if (d.Finish === "Ongoing") {
-              d.Finish = 2018;
+              d.Finish = 2016;
             }
             d.duration = d.Finish - d.Start + 1;
             d.countries = [];
@@ -94,10 +101,11 @@ d3.queue()
             d.id = counter;
             d.desc = d["Description"];
             counter++;
-            warDataReal.push(d);
+            if (d.Finish != 2017) warDataReal.push(d);
+            //warDataReal[d["Name of Conflict"]] = d;
           });
           warDataReal.shift();
-          console.log(warDataReal);
+          //console.log(warDataReal);
           //donutchartinner(companyData);
           donutchartouter(warDataReal);
           //donutchartouter(warData);
@@ -123,7 +131,7 @@ d3.queue()
               maxTotal = sum;
               maxCountry = d.name;
             }
-            spendingData.push(d);
+            spendingData[d["Country "].replace(/\s+/g, '')] = d;
           });
           console.log(spendingData);
           console.log(maxTotal);
@@ -132,11 +140,11 @@ d3.queue()
 
 var companySize=Math.random() * (50 - 30) + 30;
 //var warSize= warDataReal.length;
-var warSize = Math.random() * (50 - 30) + 30;
-var companyData=[];
-var warData=[];
+//var warSize = Math.random() * (50 - 30) + 30;
+//var companyData=[];
+//var warData=[];
 
-for(var i=0;i<companySize;i++){
+/*for(var i=0;i<companySize;i++){
   companyData.push({name: "Company"+ i, id: i, profit: Math.random() * (maxProfit - minProfit) + minProfit});
 }
 
@@ -153,22 +161,27 @@ function getCompanies(int){
 //for testing purposes
 for(var i=0;i<warSize;i++){
   warData.push({name: "War"+i, id: i, duration: Math.random() * (100 - 10) + 10, companies: getCompanies(companySize)});
-}
-
-var mainSVG = d3.select("#donut").append('svg')
-.attr("height", height).attr("width", width);
+}*/
 
 //Creates a scatterplot within a circle. Takes as input an array of objects containing company name and the profit.  
-function scatterplot(rawdata, colors){
+function scatterplot(rawdata, start, end){
+  //rawdata in cludes list of countries
+  var data=[];
 
-  var data=[]
-  for(var d in rawdata){
-    for(var c in companyData){
-      if(rawdata[d] == companyData[c].name){
-        data.push(companyData[c]);
-      }
+  for (var i = 0; i < rawdata.length; i++) {
+    var country = rawdata[i];
+    //console.log(spendingData[country]);
+    var totalInterval = 0;
+    for (var j = Number(start); j <= Number(end); j++) {
+      if (Number(spendingData[country][j]) != -1)
+        //console.log(Number(spendingData[country][j]));
+        totalInterval += Number(spendingData[country][j]);
     }
+    var color = colorToCountry.get(spendingData[country]["Region"]);
+    data.push({country, totalInterval, color});
   }
+
+  console.log(data);
 
   var padding=20;
   var scatterSVG = mainSVG.append("g")
@@ -182,34 +195,44 @@ function scatterplot(rawdata, colors){
     .style("opacity", 0);
 
 
-  var averageProfit= (minProfit+maxProfit)/2;
-  var totalProfit=0;
+  /*var averageProfit= (minProfit+maxProfit)/2;
+  var totalProfit=0;*/
 
-  for(d in data){
+  var averageSpending = (minSpending + maxSpending)/2;
+
+  /*for(d in data){
     totalProfit+=data[d].profit;
+  }*/
+  var totalSpending = 0;
+  for(d in data){
+    console.log(d);
+    totalSpending+=data[d]["totalInterval"];
   }
 
-  var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([8, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);
+  /*var rScale = d3.scaleLinear().domain([minProfit, maxProfit]).range([8, widthScatter/(2*Math.sqrt(totalProfit/averageProfit))]);*/
+
+  var rScale = d3.scaleSqrt().domain([minSpending, totalSpending]).range([8, 70]);
 
 
   var numNodes = data.length;
   var nodes = d3.range(numNodes).map(function(d) {
-    return {radius: rScale(data[d].profit), color: data[d].color, name: data[d].name, profit: data[d].profit}
-  })
+    console.log(data[d]);
+    return {radius: rScale(data[d].totalInterval), color: data[d].color, name: data[d].country, total: data[d].totalInterval}
+  });
 
   var boxForce = boundedBox()
     .bounds([[0, 0], [widthScatter, heightScatter]])
     .size(function (d) { return [d.size, d.size] })
 
   var boxForce2 = boundedBox()
-    .bounds([[0, 0], [widthScatter*1.5, heightScatter*1.5]])
+    .bounds([[0, 0], [widthScatter*1.25, heightScatter*1.25]])
     .size(function (d) { return [d.size, d.size] })
 
   var simulation = d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody().strength(3))
+    .force('charge', d3.forceManyBody().strength(5))
     .force('center', d3.forceCenter(widthScatter / 2, heightScatter / 2))
     .force('collision', d3.forceCollide().radius(function(d) {
-      return d.radius
+      return d.radius;
     }))
     .force('box', boxForce)
     .force('box', boxForce2)
@@ -239,7 +262,7 @@ function scatterplot(rawdata, colors){
         tooldiv.transition()    
            .duration(200)    
            .style("opacity", .9);    
-        tooldiv .html(d.name + "<br/>"  + d.profit.toFixed(2))  
+        tooldiv .html(d.name + "<br/>"  + d.total.toFixed(2))  
             .style("left", (d3.event.pageX) + "px")   
             .style("top", (d3.event.pageY - 28) + "px");  
       })          
@@ -334,7 +357,8 @@ var g = donutSVG.selectAll('.arc')
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
   console.log(d.data.name);
-  console.log(g.select);
+  console.log(d.data.Start);
+  //console.log(g.select);
  // console.log(g.select('#'+d.data.name).selectAll("path").style("fill"));
   //g.selectAll("path").style("fill", function(d){d3.rgb(d3.select('#'+d.data.name).selectAll("path").style("fill")).darker(1)});
   
@@ -351,11 +375,10 @@ var g = donutSVG.selectAll('.arc')
     var arc = d3.select('g#' + d.data.companies[i]);
     var currentcolor=arc.selectAll("path").style("fill");
     colors.push({name: d.data.companies[i], color: currentcolor});
-    arc
-      .style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
+    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
    
   }
-  scatterplot(d.data.companies, colors);
+  scatterplot(d.data.countries, d.data.Start, d.data.Finish);
 })
 .on("mouseout", function(d) {
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
@@ -382,10 +405,11 @@ g.append('text')
 .attr('dy', '0.25em')
 .style("font-size", "10px")
 .attr("text-anchor", function(d) {
-  var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
+  var midAngle = d.endAngle <= Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
   console.log(midAngle);
 
-  if (midAngle > Math.PI) return "end";
+  if (midAngle >= Math.PI) return "end";
+  else if (d.data.name === "War on Terror") return "end";
   else return "start";})
 .attr("transform", function(d) { 
       var midAngle = d.endAngle < Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2 + Math.PI ;
