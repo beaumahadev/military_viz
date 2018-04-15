@@ -101,7 +101,7 @@ d3.queue()
             d.id = counter;
             d.desc = d["Description"];
             counter++;
-            if (d.Finish != 2017) warDataReal.push(d);
+            warDataReal.push(d);
             //warDataReal[d["Name of Conflict"]] = d;
           });
           warDataReal.shift();
@@ -138,7 +138,7 @@ d3.queue()
           console.log(maxCountry);
         }
 
-var companySize=Math.random() * (50 - 30) + 30;
+//var companySize=Math.random() * (50 - 30) + 30;
 //var warSize= warDataReal.length;
 //var warSize = Math.random() * (50 - 30) + 30;
 //var companyData=[];
@@ -194,15 +194,8 @@ function scatterplot(rawdata, start, end){
     .attr("class", "tooltip")       
     .style("opacity", 0);
 
-
-  /*var averageProfit= (minProfit+maxProfit)/2;
-  var totalProfit=0;*/
-
   var averageSpending = (minSpending + maxSpending)/2;
 
-  /*for(d in data){
-    totalProfit+=data[d].profit;
-  }*/
   var totalSpending = 0;
   for(d in data){
     console.log(d);
@@ -248,6 +241,12 @@ function scatterplot(rawdata, start, end){
       .attr('r', function(d) {
         return d.radius;
       })
+      .style("stroke", function (d) {
+        if (d.name == "UnitedStates") return "green";
+      })
+      .style("stroke-width",function (d) {
+        if (d.name == "UnitedStates") return 3;
+      })
       .style("fill", function (d) {
         return d.color;
             })
@@ -273,8 +272,6 @@ function scatterplot(rawdata, start, end){
       });
 
     u.exit().remove()
-
-    //.attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
   }
 }
   //Code for bounding box taken from https://bl.ocks.org/cmgiven/547658968d365bcc324f3e62e175709b
@@ -330,8 +327,8 @@ function scatterplot(rawdata, start, end){
 //pie construction from https://bl.ocks.org/mbostock/3887193
 function donutchartouter(data) {
 
-var outerWidth = 400;
-var outerHeight = 400;
+var outerWidth = 700;
+var outerHeight = 700;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
@@ -348,7 +345,8 @@ var donutSVG = mainSVG.append('g')
 .attr('height', height).attr('width', width);
 
 var infodiv;
-
+var isActive = false;
+var previous;
 var g = donutSVG.selectAll('.arc')
 .data(pie(data))
 .enter().append('g')
@@ -358,6 +356,8 @@ var g = donutSVG.selectAll('.arc')
 .on("mouseover", function(d) {
   console.log(d.data.name);
   console.log(d.data.Start);
+  //var active = isActive ? false : true,
+    //newOpacity = active ? 0.3 : 1;
   //console.log(g.select);
  // console.log(g.select('#'+d.data.name).selectAll("path").style("fill"));
   //g.selectAll("path").style("fill", function(d){d3.rgb(d3.select('#'+d.data.name).selectAll("path").style("fill")).darker(1)});
@@ -367,18 +367,17 @@ var g = donutSVG.selectAll('.arc')
            .duration(200)    
            .style("visibility", "visible"); */
 
-  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', .3);
+  d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
+  scatterplot(d.data.countries, d.data.Start, d.data.Finish);
 
-
-  var colors = [];
+  /*var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
     var currentcolor=arc.selectAll("path").style("fill");
     colors.push({name: d.data.companies[i], color: currentcolor});
     arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
    
-  }
-  scatterplot(d.data.countries, d.data.Start, d.data.Finish);
+  }*/
 })
 .on("mouseout", function(d) {
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
