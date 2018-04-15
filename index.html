@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>INFO 3300 - Project 2</title>
+<title>Denfense Budgets Worldwide</title>
 <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -34,9 +34,91 @@ div.tooltip {
 body{
   background-color:#25183a;
 }
+p{
+  color: white;
+  font: 15px sans-serif;
+  
+}
+
+b{
+  font: 20px sans-serif;
+  color: #ce5ca4;
+
+
+}
+
+div.title {
+    margin: auto;
+    width:900px;
+    height:150px;
+    border: 3px solid #ce5ca4;
+    justify-content: center;
+    text-align: center; 
+}
+
+div.blurb {
+  margin: 15px;
+  padding: 15px;
+  border: 1px dotted #ce5ca4;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.title h1{
+    font: 30px sans-serif;
+    color: #ce5ca4;
+}
+
+
+.blurb h2{
+  font: 25px sans-serif;
+  color:#ce5ca4;
+
+}
+
 </style>
 </head>
 <body>
+
+<div class="Title">
+<h1>
+Defense Budget Allocation by International Governments 
+</h1>
+<p>
+<i>
+Understanding the vast amounts of money spent by the U.S. government on military operations and exploring the role of U.S. government and companies in destabilization of countries worldwide. 
+</i>
+</p>
+</div>
+
+<div class="Blurb">
+<p>
+The US Department of Defense has (as of 2010 inventory):
+</p>
+<h2>4,999 military facilities</h2>
+<p>
+<b> 4,249 </b>  are in the United States
+</p>
+<p>
+<b>88 </b> are in overseas US territories
+</p>
+<p>
+<b>662</b> are in foreign countries and foreign territories
+</p>
+<p>
+They cost <b>$900 billion </b> per year or <b>5 percent</b> of US national income
+</p>
+</div>
+
+<div class= "Blurb">
+<p>
+ Since <b>2001</b>, acknowledged U.S. national defense spending </br> has increased by almost <b>60 percent</b>
+</p>
+<p>
+Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one latin american government every 28 months </b> <br>not including failed attempts, such as the Bay of Pigs invasion of Cuba.
+</p>
+</div>
+
 
 <div id="plot">
   <div id="donut"></div>
@@ -93,7 +175,7 @@ d3.queue()
           });
           warDataReal.shift();
           console.log(warDataReal);
-          //donutchartinner(companyData);
+          donutchartinner(companyData);
           donutchartouter(warDataReal);
           //donutchartouter(warData);
         }
