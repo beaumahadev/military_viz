@@ -148,7 +148,18 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
  <div id="countrylist"></div>
 </div>
 
-<div class="linegraph" id="linegraph"></div>
+<div class="linegraph">
+  <svg id="linegraph"></svg>
+  <div id="sidebar">
+    <p>By far, US spends more than any other country on their military. If US was removed from this graph, </p>
+    <div id="option">
+    <input name="updateButton" 
+           type="button" 
+           value="Remove US" 
+           onclick="updateData()" />
+    </div>
+  </div>
+</div>
 
 <script>
 
@@ -441,7 +452,7 @@ var outerHeight = 650;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
-.outerRadius(outerRadius - 20)
+.outerRadius(outerRadius - 10)
 .innerRadius(outerRadius - 35)
 .cornerRadius(2);
 
@@ -482,11 +493,21 @@ var g = donutSVG.selectAll('.arc')
   displayInfoBox(d.data, newd);
  
 
-  for (var i in d.data.countries) {
+  /*for (var i in d.data.countries) {
    // console.log(d.data.countries[i]);
     var arc = d3.select('g#' + d.data.countries[i]);
     arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
-  }
+  }*/
+
+  var select = d3.select(this);
+
+  countrySet.forEach(function (f) {
+    console.log(d.data.countries);
+    if (!d.data.countries.includes(f)) {
+      var arc = d3.select('g#' + f);
+      arc.style("fill", select.attr('stroke')).attr('opacity', 0.3);
+    }
+  })
   /*var colors = [];
   for(var i in d.data.companies){
     var arc = d3.select('g#' + d.data.companies[i]);
@@ -499,11 +520,20 @@ var g = donutSVG.selectAll('.arc')
 .on("mouseout", function(d) {
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
   var scatter= d3.select('#scatterSVG').remove();
-  for(var i in d.data.countries){
+  var select = d3.select(this);
+
+  countrySet.forEach(function (f) {
+    console.log(d.data.countries);
+    if (!d.data.countries.includes(f)) {
+      var arc = d3.select('g#' + f);
+      arc.style("fill", select.attr('stroke')).attr('opacity', 1);
+    }
+  });
+  /*for(var i in d.data.countries){
     var arc = d3.select('g#' + d.data.countries[i]);
     //var currentcolor=arc.selectAll("path").style("fill");
     arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
-  }
+  }*/
 });
 
 g.append('path')
@@ -601,7 +631,13 @@ var circleArc = d3.arc()
 
 //rotated text from http://bl.ocks.org/vigorousnorth/7331bb51d4f0c2ae0314
 g.append('text')
-.text(function(d) {return d.data.data.name;})
+.text(function(d) {
+  var countryName = d.data.data.name;
+  if (countryName == "SaudiArabia") countryName = "Saudi Arabia";
+    else if (countryName == "SouthKorea") countryName = "South Korea";
+    else if (countryName == "SouthAfrica") countryName = "South Africa";
+    else if (countryName == "UnitedStates") countryName = "United States";
+  return countryName;})
 .attr('dy', '0.25em')
 .style("font-size", "10px")
 .attr("text-anchor", function(d) {
@@ -629,8 +665,16 @@ function displayInfoBox(data, cdata) {
 
   for(var c in cdata){
     var country = cdata[c];
+    var countryName = "";
     colorToCountry.get(spendingData[country.country]["Region"]);
-    list.innerHTML+='<p>'+ country.country+ " spent "+ country.totalInterval + '</p>';
+    if (country.country == "SaudiArabia") countryName = "Saudi Arabia";
+    else if (country.country == "SouthKorea") countryName = "South Korea";
+    else if (country.country == "SouthAfrica") countryName = "South Africa";
+    else if (country.country == "UnitedStates") countryName = "United States";
+    else {
+      countryName = country.country;
+    }
+    list.innerHTML+='<p>'+ countryName + " spent $"+ country.totalInterval + " million" +'</p>';
     
   }
 
@@ -682,22 +726,16 @@ function drawLineGraph() {
           .attr("d", lineFunction(lineData))
           .attr("stroke", colorToCountry.get(spendingData[d]["Region"]))
           .attr("stroke-width", 2)
-          .attr("fill", "none");
+          .attr("fill", "none")
+          .on("mouseover", function() {
+            console.log(d3.select(this).attr("x"));
+            d3.select(this).style("stroke-width", 5);
+          })
+          .on("mouseout", function() {
+            d3.select(this).style("stroke-width", 2);
+          });
       
     });
-
-  function drawXGridlines() {   
-    return d3.axisBottom(scaleX)
-        .ticks(10);
-  }
-
-  svg.append("g")     
-      .attr("class", "greyLine")
-      .attr("transform", "translate(0," + lineHeight + ")")
-      .call(drawXGridlines()
-          .tickSize(-lineHeight)
-          .tickFormat("")
-      );
 
 
   svg.append("text")
@@ -713,7 +751,10 @@ function drawLineGraph() {
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Year")
     //.style("fill", "#cdcdcd");
+}
 
+function removeUS() {
+  var svg = d3.select("#linegraph");
 }
 
 </script>
