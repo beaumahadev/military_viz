@@ -143,6 +143,7 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
  </h1> 
  <h2 id="name"></h2>
  <p id="description"></p>
+ <div id="countrylist"></div>
 </div>
 
 <script>
@@ -170,7 +171,7 @@ var innerColorScale = d3.scaleOrdinal()
 
 var colorToCountry = new Map([["Africa", "#468B81"], ["Americas", "#B9D46E"], ["Asia", "#E3CE6B"], ["Oceania", "#DE6D51"], ["Middle East", "#C5424E"], ["Europe", "#61B7FC"]]);
 
-console.log(colorToCountry);
+
 
 var mainSVG = d3.select("#donut").append('svg')
 .attr("height", height).attr("width", width)
@@ -236,9 +237,9 @@ d3.queue()
             }
             spendingData[d["Country "].replace(/\s+/g, '')] = d;
           });
-          console.log(spendingData);
-          console.log(maxTotal);
-          console.log(maxCountry);
+         // console.log(spendingData);
+          //console.log(maxTotal);
+          //console.log(maxCountry);
           donutchartinner(countrySet);
         }
 
@@ -371,9 +372,11 @@ function scatterplot(rawdata, start, end){
   for(var n in nodes){
     var d= nodes[n];
      var evt = new MouseEvent("mouseover");
-     d3.select('#'+d.name).node().dispatchEvent(evt);
+     d3.select('#'+d.name).node().dispatchEvent(evt);    
 
   }
+
+  return data;
 }
   //Code for bounding box taken from https://bl.ocks.org/cmgiven/547658968d365bcc324f3e62e175709b
   function boundedBox() {
@@ -470,12 +473,12 @@ var g = donutSVG.selectAll('.arc')
 
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
 
-  scatterplot(d.data.countries, d.data.Start, d.data.Finish);
-  displayInfoBox(d.data.name, d.data.desc)
+  var newd = scatterplot(d.data.countries, d.data.Start, d.data.Finish);
+  displayInfoBox(d.data, newd)
  
 
   for (var i in d.data.countries) {
-    console.log(d.data.countries[i]);
+   // console.log(d.data.countries[i]);
     var arc = d3.select('g#' + d.data.countries[i]);
     arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
   }
@@ -513,7 +516,7 @@ g.append('text')
 .style("font-size", "10px")
 .attr("text-anchor", function(d) {
   var midAngle = d.endAngle <= Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
-  console.log(midAngle);
+  //console.log(midAngle);
 
   if (midAngle >= Math.PI) return "end";
   else if (d.data.name === "War on Terror") return "end";
@@ -547,7 +550,7 @@ var arc = d3.arc()
 
 var spendingDataArray = [];
 data.forEach(function(d) {
-  console.log(d);
+  //console.log(d);
   spendingDataArray.push({"country": d, "data": spendingData[d]});
 });
 console.log(spendingDataArray);
@@ -598,7 +601,7 @@ g.append('text')
 .style("font-size", "10px")
 .attr("text-anchor", function(d) {
   var midAngle = d.endAngle <= Math.PI ? d.startAngle/2 + d.endAngle/2 : d.startAngle/2  + d.endAngle/2;
-  console.log(midAngle);
+ // console.log(midAngle);
 
   if (midAngle >= Math.PI) return "end";
   else return "start";})
@@ -609,14 +612,26 @@ g.append('text')
 
 }
 
-function displayInfoBox(name, desc) {
+function displayInfoBox(data, cdata) {
+
   var warName= document.getElementById('name');
   var warDesc= document.getElementById('description');
-  warName.innerHTML= name;
-  warDesc.innerHTML= desc;
+  var list= document.getElementById('countrylist');
+  list.innerHTML='';
+  console.log(data);
+  warName.innerHTML= data.name;
+  warDesc.innerHTML= data.desc;
 
-  return infodiv;
+  for(var c in cdata){
+    var country = cdata[c];
+    colorToCountry.get(spendingData[country.country]["Region"]);
+    list.innerHTML+='<p>'+ country.country+ " spent "+ country.totalInterval + '</p>';
+    
+  }
+
 }
+
+
 
 
 
