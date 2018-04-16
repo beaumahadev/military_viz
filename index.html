@@ -9,8 +9,8 @@
 body { font-family: 'Merriweather', Calibri, sans-serif; }
 div.donut{ 
   display:block;
-  width: 800px;
-  height: 800px;
+  width: 1000px;
+  height: 1000px;
   justify-content: left;
  }
 div.infobox{
@@ -21,7 +21,7 @@ div.infobox{
   vertical-align: top;
   position: absolute;  
   top: 550px; 
-  left: 900px;
+  left: 1050px;
   border: 1px solid white;
   padding: 10px;
 }
@@ -89,7 +89,6 @@ div.blurb {
 }
 
 
-
 </style>
 </head>
 <body>
@@ -146,14 +145,16 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
  <div id="countrylist"></div>
 </div>
 
+<div class="linegraph" id="linegraph"></div>
+
 <script>
 
 var widthScatter=250;
 var heightScatter=250;
 var minProfit=1000;
 var maxProfit=1000000;
-var height = 800;
-var width = 800;
+var height = 1000;
+var width = 1000;
 
 var warDataReal = [];
 var spendingData = [];
@@ -241,6 +242,7 @@ d3.queue()
           //console.log(maxTotal);
           //console.log(maxCountry);
           donutchartinner(countrySet);
+          drawLineGraph();
         }
 
 //var companySize=Math.random() * (50 - 30) + 30;
@@ -431,8 +433,8 @@ function scatterplot(rawdata, start, end){
 //pie construction from https://bl.ocks.org/mbostock/3887193
 function donutchartouter(data) {
 
-var outerWidth = width*3/4;
-var outerHeight = height*3/4;
+var outerWidth = 650;
+var outerHeight = 650;
 var outerRadius = Math.min(outerWidth, outerHeight) / 2;
 
 var arc = d3.arc()
@@ -474,7 +476,7 @@ var g = donutSVG.selectAll('.arc')
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
 
   var newd = scatterplot(d.data.countries, d.data.Start, d.data.Finish);
-  displayInfoBox(d.data, newd)
+  displayInfoBox(d.data, newd);
  
 
   for (var i in d.data.countries) {
@@ -631,9 +633,87 @@ function displayInfoBox(data, cdata) {
 
 }
 
+function drawLineGraph() {
+
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+    lineWidth = 960 - margin.left - margin.right,
+    lineHeight = 500 - margin.top - margin.bottom;
+
+  var svg = d3.select("#linegraph").append("svg")
+    .attr("width", lineWidth + margin.left + margin.right)
+    .attr("height", lineHeight + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+  var scaleX = d3.scaleLinear().range([0,lineWidth]);
+  var scaleY = d3.scaleLinear().range([lineHeight, 0]);
+
+  scaleX.domain([1990,2016]);
+  scaleY.domain([0, 800000]);
+
+  svg.append("g")
+      .attr("class", "greyLine")
+      .attr("transform", "translate(0," + lineHeight + ")")
+      .call(d3.axisBottom(scaleX).tickFormat(d3.format("d")));
+
+    svg.append("g")
+      .attr("class", "greyLine")
+      .call(d3.axisLeft(scaleY));
+
+    var yearCounter = 1990;
+
+    var lineFunction = d3.line()
+                       .x(function(d) { return scaleX(d.year);})
+                       .y(function(d) { return scaleY(d.value); })
+                       .curve(d3.curveLinear); 
+    
+
+    countrySet.forEach(function(d) {
+      var lineData =[];
+      for (var i = 1990; i < 2017; i++) {
+        lineData.push({"year": i, "value": spendingData[d][i]});
+      }
+      console.log(lineData);
+        svg.append("path")
+          .attr("d", lineFunction(lineData))
+          .attr("stroke", colorToCountry.get(spendingData[d]["Region"]))
+          .attr("stroke-width", 2)
+          .attr("fill", "none");
+      
+    });
+
+  function drawXGridlines() {   
+    return d3.axisBottom(scaleX)
+        .ticks(10);
+  }
+
+  svg.append("g")     
+      .attr("class", "greyLine")
+      .attr("transform", "translate(0," + lineHeight + ")")
+      .call(drawXGridlines()
+          .tickSize(-lineHeight)
+          .tickFormat("")
+      );
 
 
+  svg.append("text")
+    //.attr("class", "greyLines")
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate(" + -50 + "," + (lineHeight/2) + ")rotate(-90)")
+    //.attr("font-family", "'Ubuntu', sans-serif")
+    .text("Domestic Military Spending")
+    .style("fill", "#cdcdcd");
 
+  svg.append("text")
+    //.attr("class", "greyLines")
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 30) + ")")
+    //.attr("font-family", "'Ubuntu', sans-serif")
+    .text("Year")
+    .style("fill", "#cdcdcd");
+
+}
 
 </script>
 </body>
