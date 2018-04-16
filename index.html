@@ -105,6 +105,18 @@ svg#horizontalChart {
   display:block;
   justify-content: left;
 }
+div#horizontalSide {
+  display: inline-block;
+  width:200px;
+  height: 100px;
+  vertical-align: top; 
+  position: absolute;
+  top: 2150px;
+  left: 850px;
+}
+div #horizontalSide p {
+  color: black;
+}
 
 
 .blurb h2{
@@ -256,7 +268,52 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
 <div>
   <h1>Top 5 Total Spending:</h1>
   <svg id="horizontalchart"></svg>
-  <div id="option"></div>
+  <div id="horizontalSide">
+    <p>Top Ten Countries: </p>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           value="Reset" 
+           onclick="restChart(value)" />
+    </div>
+    <p>Filter by Region:</p>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           value="Africa" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           value="Asia" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Europe" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Middle East" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Oceania" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Americas" 
+           onclick="filterChart(value)" />
+    </div> 
+  </div>
 </div>
 
 <script>
@@ -275,6 +332,7 @@ var maxSpending = 0;
 var maxCountry = "";
 var maxTotal = 0;
 var counter = -1;
+var noUS = false;
 //removed Ukraine, Yemen, Israel, Kuwait, Japan, 
 const countrySet = new Set(["Angola","Burundi", "Congo","Djibouti", "Rwanda","Uganda","SouthAfrica","Sudan", "UnitedStates","Canada","Mexico","Brazil", "China", "Philippines", "SouthKorea","Pakistan", "Afghanistan", "India", "Australia","Iran","Iraq", "Kuwait", "Israel", "Oman", "UAE", "Yemen", "SaudiArabia", "Qatar", "Turkey", "Georgia", "Russia", "France", "Germany", "Ukraine", "Italy", "UK", "Spain", "Romania", "Albania"]);
 
@@ -870,6 +928,7 @@ function removeUS() {
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
+
   var noUSSet = new Set(countrySet);
   noUSSet.delete("UnitedStates");
 
@@ -903,6 +962,8 @@ function removeUS() {
           .duration(750)
           .attr("d", lineFunction(lineData));
     });
+
+  noUS = true;
 }
 
 function reset() {
@@ -937,6 +998,8 @@ function reset() {
           .attr("d", lineFunction(lineData))
           .attr("transform", "translate(0,0)");
     });
+
+  noUS = false;
 }
 
 function filter(value) {
@@ -960,7 +1023,12 @@ function filter(value) {
       scaleY.domain([0, 200000]);
       break;
     case "Americas":
-      scaleY.domain([0, 800000]);
+      console.log(noUS);
+      if (noUS) {
+        scaleY.domain([0, 40000]);
+      } else {
+        scaleY.domain([0, 800000]);
+      }
       break;
     case "Middle East":
       scaleY.domain([0, 100000]);
