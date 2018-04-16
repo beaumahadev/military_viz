@@ -43,7 +43,19 @@ div#sidebar {
 div #sidebar p {
   color: black;
 }
-
+div #option {
+  margin-bottom: 10px;
+}
+div .tooltip {
+  width: 60px;
+  height: 30px;
+  padding: 2px;
+  border-radius: 5px;
+  border: 0px;
+  position: absolute;
+  text-align: center;
+  background: lightsteelblue;
+}
 body{
   background-color:#25183a;
 }
@@ -776,6 +788,9 @@ function drawLineGraph() {
                        .y(function(d) { return scaleY(d.value); })
                        .curve(d3.curveLinear); 
     
+    var tooltip = d3.select('#svglinegraph').append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
     countrySet.forEach(function(d) {
       var lineData =[];
@@ -790,13 +805,21 @@ function drawLineGraph() {
           .attr("stroke-width", 2)
           .attr("fill", "none")
           .on("mouseover", function() {
-            console.log(d3.select(this).attr("x"));
+            console.log(d);
             d3.select(this).style("stroke-width", 5);
+            tooltip.transition()
+              .duration(200)
+              .style("opacity", 0.9);
+            tooltip.html(d)
+              .style("left", (d3.event.pageX) + "px")   
+              .style("top", (d3.event.pageY - 28) + "px");
           })
           .on("mouseout", function() {
             d3.select(this).style("stroke-width", 2);
+            tooltip.transition()
+              .duration(500)
+              .style("opacity", 0);
           });
-      
     });
 
 
@@ -815,6 +838,7 @@ function drawLineGraph() {
     //.style("fill", "#cdcdcd");
 }
 
+//inspiration from http://duspviz.mit.edu/d3-workshop/transitions-animation/
 function removeUS() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 960 - margin.left - margin.right,
