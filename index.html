@@ -683,7 +683,7 @@ var g = donutSVG.selectAll('.arc')
     //console.log(d.data.countries);
     if (!d.data.countries.includes(f)) {
       var arc = d3.select('g#' + f);
-      arc.style("fill", select.attr('stroke')).attr('opacity', 0.3);
+      arc.style("fill", select.attr('stroke')).attr('opacity', 0.2);
     }
   })
 })
@@ -827,6 +827,12 @@ function displayInfoBox(data, cdata) {
   //console.log(data);
   warName.innerHTML= data.name;
   warDesc.innerHTML= data.desc;
+  
+  const numberWithCommas = (x) => {
+    var px = Math.round(x, 1);
+    return (px+'').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+  }
 
   function madeLessThan(ob1,ob2){
     if(ob1.totalInterval > ob2.totalInterval){
@@ -851,7 +857,7 @@ function displayInfoBox(data, cdata) {
     else {
       countryName = country.country;
     }
-    list.innerHTML+='<p>'+ countryName + " spent $"+ country.totalInterval + " million" +'</p>';
+    list.innerHTML+='<p>'+ countryName + " spent $"+ numberWithCommas(country.totalInterval) + " million" +'</p>';
     
   }
 
@@ -859,7 +865,7 @@ function displayInfoBox(data, cdata) {
 
 function drawLineGraph() {
 
-  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+  var margin = {top: 20, right: 20, bottom: 40, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -929,14 +935,14 @@ function drawLineGraph() {
 
   svg.append("text")
     .attr("text-anchor", "middle")
-    .attr("transform", "translate(" + -50 + "," + (lineHeight/2) + ")rotate(-90)")
+    .attr("transform", "translate(" + -60 + "," + (lineHeight/2) + ")rotate(-90)")
     //.attr("font-family", "'Ubuntu', sans-serif")
-    .text("Domestic Military Spending")
+    .text("Domestic Military Spending (in millions)")
     .style("fill", "white");
 
   svg.append("text")
     .attr("text-anchor", "middle")
-    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 30) + ")")
+    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 35) + ")")
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Year")
     .style("fill", "white");
