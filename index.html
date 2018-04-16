@@ -91,6 +91,15 @@ div.blurb {
 div.linegraph {
   background-color: white
 }
+div.topfive {
+  background-color: white
+}
+svg#horizontalChart {
+  width: 800px;
+  height: 450px;
+  display:block;
+  justify-content: left;
+}
 
 .title h1{
     font: 30px sans-serif;
@@ -234,6 +243,12 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
   </div>
 </div>
 
+<div class="topfive">
+  <h1>Total Military Spendings from 1990-2016:</h1>
+  <svg id="horizontalchart"></svg>
+  <div id="option"></div>
+</div>
+
 <script>
 
 var widthScatter=250;
@@ -330,6 +345,7 @@ d3.queue()
           //console.log(maxCountry);
           donutchartinner(countrySet);
           drawLineGraph();
+          drawHoriCharts();
         }
 
 //var companySize=Math.random() * (50 - 30) + 30;
@@ -838,7 +854,7 @@ function drawLineGraph() {
     //.style("fill", "#cdcdcd");
 }
 
-//inspiration from http://duspviz.mit.edu/d3-workshop/transitions-animation/
+//code inspiration for animations from http://duspviz.mit.edu/d3-workshop/transitions-animation/
 function removeUS() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 960 - margin.left - margin.right,
@@ -985,6 +1001,93 @@ function filter(value) {
    .duration(750)
    .attr("transform", "translate(0, -800)");
   })
+}
+
+function drawHoriCharts() {
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+    lineWidth = 700 - margin.left - margin.right,
+    lineHeight = 400 - margin.top - margin.bottom;
+
+  var topTenSet = [];
+  var countrySetCopy = new Set(countrySet);
+  
+  for (var i = 0; i < 10; i++) {
+    var maxCountry = "";
+    var maxTotal = 0;
+    countrySetCopy.forEach(function(d) {
+      if (spendingData[d].total > maxTotal) {
+        maxTotal = spendingData[d].total;
+        maxCountry = d;
+      }
+    });
+    //topTenSet.add(maxCountry);
+    topTenSet.push({"name": maxCountry, "total": maxTotal});
+    countrySetCopy.delete(maxCountry);
+  }
+
+  console.log(topTenSet);
+
+  var xScale = d3.scaleLinear()
+            .domain([0,topTenSet[0].total + 2000000])
+            .range([0,lineWidth]);
+
+  var yScale = d3.scaleLinear()
+          .domain([0,topTenSet.length - 1])
+          .range([0,lineHeight]);
+
+  var svg = d3.select("#horizontalchart").append("svg")
+          .attr("width", lineWidth + margin.left + margin.right)
+          .attr("height", lineHeight + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.append("g")
+      .attr("transform", "translate(0," + Number(lineHeight + 14) + ")")
+      .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
+
+  svg.append("g")
+    .attr("class", "yAxis")
+    .call(d3.axisLeft(yScale).tickSize(2).tickFormat(function(d, i) {
+      console.log(topTenSet[i].name);
+        return topTenSet[i].name;
+      }));
+
+  var chart = svg.append('g')
+    .attr('id', 'bars')
+    .selectAll('rect')
+    .data(topTenSet)
+    .enter()
+    .append('rect')
+    .attr('height', 24)
+    .attr('width', function(d){
+      return xScale(d.total);
+    })
+    .attr('x', 0)
+    .attr('y', function(d, i) {
+      return yScale(i) - 12 ;
+    })
+    .style("fill", function(d) {
+      return colorToCountry.get(spendingData[d.name]["Region"])
+    });
+
+  var text = svg.append('g')
+    .attr('id', 'text')
+    .selectAll('text')
+    .data(topTenSet)
+    .enter()
+    .append('text')
+    .style('font-size', 10)
+    .text(function (d) {
+      console.log(d);
+      return d.total;
+    })
+    .attr('x', function(d) {
+      return xScale(d.total) + 10;
+    })
+    .attr('y', function(d, i) {
+      return yScale(i) ;
+    });
 }
 
 
