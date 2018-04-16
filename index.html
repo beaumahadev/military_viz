@@ -25,6 +25,24 @@ div.infobox{
   border: 1px solid white;
   padding: 10px;
 }
+svg#svglinegraph {
+  width: 960px;
+  height: 550px;
+ display:block;
+ justify-content: left;
+}
+div#sidebar {
+  display: inline-block;
+  width:200px;
+  height: 100px;
+  vertical-align: top; 
+  position: absolute;
+  top: 1500px;
+  left: 1050px;
+}
+div #sidebar p {
+  color: black;
+}
 
 body{
   background-color:#25183a;
@@ -149,14 +167,20 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
 </div>
 
 <div class="linegraph">
-  <svg id="linegraph"></svg>
+  <svg id="svglinegraph"></svg>
   <div id="sidebar">
     <p>By far, US spends more than any other country on their military. If US was removed from this graph, </p>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Reset" 
+           onclick="reset()" />
+    </div>
     <div id="option">
     <input name="updateButton" 
            type="button" 
            value="Remove US" 
-           onclick="updateData()" />
+           onclick="removeUS()" />
     </div>
   </div>
 </div>
@@ -686,7 +710,7 @@ function drawLineGraph() {
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
-  var svg = d3.select("#linegraph").append("svg")
+  var svg = d3.select("#svglinegraph").append("svg")
     .attr("width", lineWidth + margin.left + margin.right)
     .attr("height", lineHeight + margin.top + margin.bottom)
     .append("g")
@@ -705,7 +729,7 @@ function drawLineGraph() {
       .call(d3.axisBottom(scaleX).tickFormat(d3.format("d")));
 
     svg.append("g")
-      .attr("class", "greyLine")
+      .attr("class", "yAxis")
       .call(d3.axisLeft(scaleY));
 
     var yearCounter = 1990;
@@ -723,6 +747,7 @@ function drawLineGraph() {
       }
       console.log(lineData);
         svg.append("path")
+          .attr("id", "line" + d)
           .attr("d", lineFunction(lineData))
           .attr("stroke", colorToCountry.get(spendingData[d]["Region"]))
           .attr("stroke-width", 2)
@@ -754,8 +779,83 @@ function drawLineGraph() {
 }
 
 function removeUS() {
-  var svg = d3.select("#linegraph");
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+    lineWidth = 960 - margin.left - margin.right,
+    lineHeight = 500 - margin.top - margin.bottom;
+
+  var noUSSet = new Set(countrySet);
+  noUSSet.delete("UnitedStates");
+
+  var scaleX = d3.scaleLinear().range([0,lineWidth]);
+  var scaleY = d3.scaleLinear().range([lineHeight, 0]);
+
+  scaleX.domain([1990,2016]);
+  scaleY.domain([0, 250000]);
+
+  var svg = d3.select("#svglinegraph").transition();
+  var lineFunction = d3.line()
+                       .x(function(d) { return scaleX(d.year);})
+                       .y(function(d) { return scaleY(d.value); })
+                       .curve(d3.curveLinear); 
+
+  svg.select(".yAxis")
+    .duration(750)
+    .call(d3.axisLeft(scaleY));
+
+  svg.select("#lineUnitedStates")
+   .duration(750)
+   .attr("transform", "translate(0, -800)");
+  
+  noUSSet.forEach(function(d) {
+    var lineData =[];
+      for (var i = 1990; i < 2017; i++) {
+        lineData.push({"year": i, "value": spendingData[d][i]});
+      }
+      console.log(lineData);
+      svg.select("#line" + d)
+          .duration(750)
+          .attr("d", lineFunction(lineData));
+    });
 }
+
+function reset() {
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+    lineWidth = 960 - margin.left - margin.right,
+    lineHeight = 500 - margin.top - margin.bottom;
+
+  var scaleX = d3.scaleLinear().range([0,lineWidth]);
+  var scaleY = d3.scaleLinear().range([lineHeight, 0]);
+
+  scaleX.domain([1990,2016]);
+  scaleY.domain([0, 800000]);
+
+  var svg = d3.select("#svglinegraph").transition();
+  var lineFunction = d3.line()
+                       .x(function(d) { return scaleX(d.year);})
+                       .y(function(d) { return scaleY(d.value); })
+                       .curve(d3.curveLinear); 
+
+  svg.select(".yAxis")
+    .duration(750)
+    .call(d3.axisLeft(scaleY));
+
+  svg.select("#lineUnitedStates")
+    .attr("transform", "translate(0,0)");
+
+  countrySet.forEach(function(d) {
+    var lineData =[];
+      for (var i = 1990; i < 2017; i++) {
+        lineData.push({"year": i, "value": spendingData[d][i]});
+      }
+      console.log(d);
+      svg.select("#line" + d)
+          .duration(750)
+          .attr("d", lineFunction(lineData));
+
+    });
+
+}
+
 
 </script>
 </body>
