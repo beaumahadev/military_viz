@@ -100,6 +100,18 @@ svg#horizontalChart {
   display:block;
   justify-content: left;
 }
+div#horizontalSide {
+  display: inline-block;
+  width:200px;
+  height: 100px;
+  vertical-align: top; 
+  position: absolute;
+  top: 2150px;
+  left: 850px;
+}
+div #horizontalSide p {
+  color: black;
+}
 
 .title h1{
     font: 30px sans-serif;
@@ -246,7 +258,52 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
 <div class="topfive">
   <h1>Total Military Spendings from 1990-2016:</h1>
   <svg id="horizontalchart"></svg>
-  <div id="option"></div>
+  <div id="horizontalSide">
+    <p>Top Ten Countries: </p>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           value="Reset" 
+           onclick="restChart(value)" />
+    </div>
+    <p>Filter by Region:</p>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           value="Africa" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           value="Asia" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Europe" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Middle East" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Oceania" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           value="Americas" 
+           onclick="filterChart(value)" />
+    </div> 
+  </div>
 </div>
 
 <script>
