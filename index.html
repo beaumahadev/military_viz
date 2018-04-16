@@ -828,6 +828,18 @@ function displayInfoBox(data, cdata) {
   warName.innerHTML= data.name;
   warDesc.innerHTML= data.desc;
 
+  function madeLessThan(ob1,ob2){
+    if(ob1.totalInterval > ob2.totalInterval){
+      return -1;
+    }else if(ob1.totalInterval<ob2.totalInterval){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+
+  cdata.sort(madeLessThan);
+
   for(var c in cdata){
     var country = cdata[c];
     var countryName = "";
