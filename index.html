@@ -274,43 +274,12 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
            value="Reset" 
            onclick="restChart(value)" />
     </div>
-    <p>Filter by Region:</p>
     <div id="option">
       <input name="resetButton" 
            type="button" 
-           value="Africa" 
-           onclick="filterChart(value)" />
+           value="Stack!" 
+           onclick="stackHoriCharts()" />
     </div>
-    <div id="option">
-      <input name="resetButton" 
-           type="button" 
-           value="Asia" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           value="Europe" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           value="Middle East" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           value="Oceania" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           value="Americas" 
-           onclick="filterChart(value)" />
-    </div> 
   </div>
 </div>
 
@@ -1101,8 +1070,6 @@ function drawHoriCharts() {
     countrySetCopy.delete(maxCountry);
   }
 
-  console.log(topTenSet);
-
   var xScale = d3.scaleLinear()
             .domain([0,topTenSet[0].total + 2000000])
             .range([0,lineWidth]);
@@ -1144,16 +1111,27 @@ function drawHoriCharts() {
     .attr('y', function(d, i) {
       return yScale(i) - 12 ;
     })
+    .attr('id', function(d) {
+      if (d.name == "UnitedStates") {
+        return "idUS";
+      } else {
+        return "bar" + d.name;
+      }
+    })
     .style("fill", function(d) {
       return colorToCountry.get(spendingData[d.name]["Region"])
     });
 
   var text = svg.append('g')
-    .attr('id', 'text')
     .selectAll('text')
     .data(topTenSet)
     .enter()
     .append('text')
+    .attr('id', function(d) {
+      if (d.name == "UnitedStates") return "UStext";
+      if (d.name == "China") return "Chinatext";
+      else return "text";
+    })
     .style('font-size', 10)
     .style('fill', 'white')
     .text(function (d) {
@@ -1166,6 +1144,60 @@ function drawHoriCharts() {
     .attr('y', function(d, i) {
       return yScale(i) ;
     });
+}
+
+function stackHoriCharts() {
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+    lineWidth = 700 - margin.left - margin.right,
+    lineHeight = 400 - margin.top - margin.bottom;
+
+    var topNineSet = [];
+  var countrySetCopy = new Set(countrySet);
+  countrySetCopy.delete("UnitedStates");
+  var runningTotal = 0;
+  for (var i = 0; i < 9; i++) {
+    var maxCountry = "";
+    var maxTotal = 0;
+    countrySetCopy.forEach(function(d) {
+      if (spendingData[d].total > maxTotal) {
+        maxTotal = spendingData[d].total;
+        maxCountry = d;
+      }
+    });
+    topNineSet.push({"name": maxCountry, "width": maxTotal, "x": runningTotal});
+    countrySetCopy.delete(maxCountry);
+    runningTotal += maxTotal;
+  }
+
+
+console.log(topNineSet);
+  var svg = d3.select("#horizontalchart").transition();
+
+  svg.selectAll('#text')
+    .duration('750')
+    .attr("transform", "translate(800, 0)");
+
+  var xScale = d3.scaleLinear()
+            .domain([0,spendingData["UnitedStates"].total + 2000000])
+            .range([0,lineWidth]);
+
+  var yScale = d3.scaleLinear()
+          .domain([0,9])
+          .range([0,lineHeight]);
+
+  topNineSet.forEach(function(d) {
+    svg.select("#bar" + d.name)
+      .duration('750')
+      .attr('x', xScale(d.x))
+      .duration('750')
+      .attr('y', 26.8888);
+  });
+
+  svg.select('#Chinatext')
+    .duration('750')
+    .text(runningTotal)
+    .attr("x", xScale(Number(runningTotal)) + 10);
+
 }
 
 
