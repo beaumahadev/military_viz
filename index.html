@@ -18,21 +18,21 @@ div.donut{
  }
 div.infobox{
   width:200px;
-  height: 550px;
-  background: #624c84;
+  background: #453859;
   display: inline-block;
   vertical-align: top;
   position: absolute;  
-  top: 550px; 
+  top: 800px; 
   left: 1050px;
-  border: 1px solid white;
+  border-left: 4px solid #614c82;
+  border-bottom: 4px solid #614c82;
   padding: 10px;
 }
 svg#svglinegraph {
   width: 960px;
   height: 550px;
- display:block;
- justify-content: left;
+  display:block;
+
 }
 div#sidebar {
   display: inline-block;
@@ -40,7 +40,7 @@ div#sidebar {
   height: 100px;
   vertical-align: top; 
   position: absolute;
-  top: 1500px;
+  top: 1900px;
   left: 1050px;
 }
 
@@ -99,6 +99,13 @@ div.blurb {
   vertical-align: top;
 }
 
+div.titlebox{
+  margin: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
+  border-bottom: 1px dotted #ce5ca4;
+}
+
 svg#horizontalChart {
   width: 800px;
   height: 450px;
@@ -111,10 +118,9 @@ div#horizontalSide {
   height: 100px;
   vertical-align: top; 
   position: absolute;
-  top: 2150px;
+  top: 2550px;
   left: 850px;
 }
-
 
 
 .blurb h2{
@@ -137,6 +143,12 @@ div#horizontalSide {
 
 }
 
+.button {
+  background: #453859;
+  border: 2px solid #614c82;
+  color:white;
+}
+
 .axis line{
   stroke: white;
 }
@@ -147,6 +159,11 @@ div#horizontalSide {
 
 .axis text{
   fill: white;
+}
+
+.titlebox p{
+  text-align: center;
+
 }
 
 
@@ -160,7 +177,7 @@ Defense Budget Allocation by International Governments
 </h1>
 <p>
 <i>
-Understanding the vast amounts of money spent by the U.S. government and other European countries on military operations and exploring their roles in the destabilization of other countries. 
+Understanding the vast amounts of money spent by the U.S. government and other European countries on military operations to explore their roles in the destabilization of other countries. 
 </i>
 </p>
 </div>
@@ -193,6 +210,15 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
 </p>
 </div>
 
+<div class= "titlebox">
+<h1>
+International Wars and Military Spending  
+</h1>
+<p>
+The visualization below explores recent international wars and the respective military spending of the countries involved for that time period. Mouse over a war to see a description, the countries involved, and a bubble graph of spending colored by continent.  
+</p>
+</div>
+
 
 
 <div  class= "donut" id="donut"></div>
@@ -206,80 +232,150 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
  <div id="countrylist"></div>
 </div>
 
+<div class= "titlebox">
+<h1>
+Military Spending Over Time
+</h1>
+<p>
+By far, US spends more than any other country on their military. If US was removed from this graph, the distribution of spending among other countries can be more clearly seen. 
+</p>
+</div>
+
 <div class="linegraph">
-  <h1>Overall Spending Over Time:</h1>
   <svg id="svglinegraph"></svg>
   <div id="sidebar">
-    <p>By far, US spends more than any other country on their military. If US was removed from this graph, the distribution of spending among other countries can be more clearly seen.</p>
     <div id="option">
     <input name="resetButton" 
-           type="button" 
+           type="button"
+           class="button" 
            value="Reset" 
            onclick="reset()" />
     </div>
     <div id="option">
     <input name="updateButton" 
-           type="button" 
+           type="button"
+           class="button" 
            value="Remove US" 
            onclick="removeUS()" />
     </div>
     <p>Filter by Region:</p>
     <div id="option">
     <input name="resetButton" 
-           type="button" 
+           type="button"
+           class="button" 
            value="Africa" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Americas" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Europe" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Oceania" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Middle East" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Asia" 
            onclick="filter(value)" />
     </div>
   </div>
 </div>
 
+<div class= "titlebox">
+<h1>
+Top Military Spenders
+</h1>
+<p>
+What is the overall proportion of the U.S.'s spending vs. other countries?
+</p>
+</div>
+
 <div>
-  <h1>Top 5 Total Spending:</h1>
   <svg id="horizontalchart"></svg>
   <div id="horizontalSide">
     <p>Top Ten Countries: </p>
     <div id="option">
       <input name="resetButton" 
            type="button" 
+           class="button"
            value="Reset" 
            onclick="restChart(value)" />
     </div>
+<<<<<<< HEAD
     <div id="option">
       <input name="resetButton" 
            type="button" 
            value="Stack!" 
            onclick="stackHoriCharts()" />
     </div>
+=======
+    <p>Filter by Region:</p>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           class="button"
+           value="Africa" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+      <input name="resetButton" 
+           type="button" 
+           class="button"
+           value="Asia" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           class="button"
+           value="Europe" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           class="button"
+           value="Middle East" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           class="button"
+           value="Oceania" 
+           onclick="filterChart(value)" />
+    </div>
+    <div id="option">
+    <input name="resetButton" 
+           type="button" 
+           class="button"
+           value="Americas" 
+           onclick="filterChart(value)" />
+    </div> 
+>>>>>>> b4ff046363c2358971c749cd6e51f95568a1664a
   </div>
 </div>
 
@@ -496,25 +592,9 @@ function scatterplot(rawdata, start, end){
       .attr('cy', function(d) {
         return d.y;
       })
-      .append('text')
-      .text(function(d) {return "FUCK";})
-      .attr('y', function(d){ return d.y;})
-      .attr('x',function(d){return d.x;})
-      .style("font-size", "10px");
-      
-
-
     u.exit().remove()
   }
 
-  
-
-  for(var n in nodes){
-    var d= nodes[n];
-     var evt = new MouseEvent("mouseover");
-     d3.select('#'+d.name).node().dispatchEvent(evt);    
-
-  }
 
   return data;
 }
@@ -598,48 +678,23 @@ var g = donutSVG.selectAll('.arc')
 .attr("id", function(d) {return d.data.name })
 .attr("transform", "translate(" + width/2 + "," + height/2 + ")" )
 .on("mouseover", function(d) {
-  console.log(d.data.name);
-  console.log(d.data.Start);
-  //var active = isActive ? false : true,
-    //newOpacity = active ? 0.3 : 1;
-  //console.log(g.select);
- // console.log(g.select('#'+d.data.name).selectAll("path").style("fill"));
-  //g.selectAll("path").style("fill", function(d){d3.rgb(d3.select('#'+d.data.name).selectAll("path").style("fill")).darker(1)});
-  
-  //infodiv = displayInfoBox(d.data.name, d.data.desc);
-  /*infodiv.transition()    
-           .duration(200)    
-           .style("visibility", "visible"); */
+  //console.log(d.data.name);
+  //console.log(d.data.Start);
 
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
 
   var newd = scatterplot(d.data.countries, d.data.Start, d.data.Finish);
   displayInfoBox(d.data, newd);
- 
-
-  /*for (var i in d.data.countries) {
-   // console.log(d.data.countries[i]);
-    var arc = d3.select('g#' + d.data.countries[i]);
-    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
-  }*/
 
   var select = d3.select(this);
 
   countrySet.forEach(function (f) {
-    console.log(d.data.countries);
+    //console.log(d.data.countries);
     if (!d.data.countries.includes(f)) {
       var arc = d3.select('g#' + f);
-      arc.style("fill", select.attr('stroke')).attr('opacity', 0.3);
+      arc.style("fill", select.attr('stroke')).attr('opacity', 0.2);
     }
   })
-  /*var colors = [];
-  for(var i in d.data.companies){
-    var arc = d3.select('g#' + d.data.companies[i]);
-    var currentcolor=arc.selectAll("path").style("fill");
-    colors.push({name: d.data.companies[i], color: currentcolor});
-    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 0.3);
-   
-  }*/
 })
 .on("mouseout", function(d) {
   d3.select(this).style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
@@ -647,17 +702,12 @@ var g = donutSVG.selectAll('.arc')
   var select = d3.select(this);
 
   countrySet.forEach(function (f) {
-    console.log(d.data.countries);
+   // console.log(d.data.countries);
     if (!d.data.countries.includes(f)) {
       var arc = d3.select('g#' + f);
       arc.style("fill", select.attr('stroke')).attr('opacity', 1);
     }
   });
-  /*for(var i in d.data.countries){
-    var arc = d3.select('g#' + d.data.countries[i]);
-    //var currentcolor=arc.selectAll("path").style("fill");
-    arc.style("fill", d3.select(this).attr('stroke')).attr('opacity', 1);
-  }*/
 });
 
 g.append('path')
@@ -712,7 +762,7 @@ data.forEach(function(d) {
   //console.log(d);
   spendingDataArray.push({"country": d, "data": spendingData[d]});
 });
-console.log(spendingDataArray);
+//console.log(spendingDataArray);
 /*var spendingDataArray = Object.keys(data).map(function(key) {
   return {"country": key, "data": data[key]}
 });*/
@@ -733,8 +783,8 @@ var g  = innerSVG.selectAll('.arc')
 .attr("transform", "translate(" + innerWidth/2 + "," + innerHeight/2 + ")" )
 .attr("id", function(d) { return d.data.data.name; })
 .on("mouseover", function(d) {
-  console.log(d.data.data.name);
-  console.log( this.getBoundingClientRect());
+  //console.log(d.data.data.name);
+  //console.log( this.getBoundingClientRect());
 }) ;
 
 g.append('path')
@@ -777,15 +827,33 @@ g.append('text')
 
 }
 
+  const numberWithCommas = (x) => {
+    var px = Math.round(x, 1);
+    return (px+'').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+  }
+
 function displayInfoBox(data, cdata) {
 
   var warName= document.getElementById('name');
   var warDesc= document.getElementById('description');
   var list= document.getElementById('countrylist');
   list.innerHTML='';
-  console.log(data);
+  //console.log(data);
   warName.innerHTML= data.name;
   warDesc.innerHTML= data.desc;
+
+  function madeLessThan(ob1,ob2){
+    if(ob1.totalInterval > ob2.totalInterval){
+      return -1;
+    }else if(ob1.totalInterval<ob2.totalInterval){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+
+  cdata.sort(madeLessThan);
 
   for(var c in cdata){
     var country = cdata[c];
@@ -798,7 +866,7 @@ function displayInfoBox(data, cdata) {
     else {
       countryName = country.country;
     }
-    list.innerHTML+='<p>'+ countryName + " spent $"+ country.totalInterval + " million" +'</p>';
+    list.innerHTML+='<p>'+ countryName + " spent $"+ numberWithCommas(country.totalInterval) + " million" +'</p>';
     
   }
 
@@ -806,7 +874,7 @@ function displayInfoBox(data, cdata) {
 
 function drawLineGraph() {
 
-  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+  var margin = {top: 20, right: 20, bottom: 40, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -848,7 +916,7 @@ function drawLineGraph() {
       for (var i = 1990; i < 2017; i++) {
         lineData.push({"year": i, "value": spendingData[d][i]});
       }
-      console.log(lineData);
+      //console.log(lineData);
         svg.append("path")
           .attr("id", "line" + d)
           .attr("d", lineFunction(lineData))
@@ -876,14 +944,14 @@ function drawLineGraph() {
 
   svg.append("text")
     .attr("text-anchor", "middle")
-    .attr("transform", "translate(" + -50 + "," + (lineHeight/2) + ")rotate(-90)")
+    .attr("transform", "translate(" + -60 + "," + (lineHeight/2) + ")rotate(-90)")
     //.attr("font-family", "'Ubuntu', sans-serif")
-    .text("Domestic Military Spending")
+    .text("Domestic Military Spending (in millions)")
     .style("fill", "white");
 
   svg.append("text")
     .attr("text-anchor", "middle")
-    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 30) + ")")
+    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 35) + ")")
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Year")
     .style("fill", "white");
@@ -924,7 +992,7 @@ function removeUS() {
       for (var i = 1990; i < 2017; i++) {
         lineData.push({"year": i, "value": spendingData[d][i]});
       }
-      console.log(lineData);
+      //console.log(lineData);
       svg.select("#line" + d)
           .duration(750)
           .attr("d", lineFunction(lineData));
@@ -959,7 +1027,7 @@ function reset() {
       for (var i = 1990; i < 2017; i++) {
         lineData.push({"year": i, "value": spendingData[d][i]});
       }
-      console.log(d);
+      //console.log(d);
       svg.select("#line" + d)
           .duration(750)
           .attr("d", lineFunction(lineData))
@@ -970,7 +1038,7 @@ function reset() {
 }
 
 function filter(value) {
-  console.log(value);
+  //console.log(value);
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
@@ -990,7 +1058,7 @@ function filter(value) {
       scaleY.domain([0, 200000]);
       break;
     case "Americas":
-      console.log(noUS);
+      //console.log(noUS);
       if (noUS) {
         scaleY.domain([0, 40000]);
       } else {
@@ -1020,7 +1088,7 @@ function filter(value) {
   var regionSet = new Set();
 
   countrySet.forEach(function(d) {
-    console.log(d);
+    //console.log(d);
     if(spendingData[d].Region == value) {
       regionSet.add(d);
     } else {
@@ -1034,7 +1102,7 @@ function filter(value) {
       for (var i = 1990; i < 2017; i++) {
         lineData.push({"year": i, "value": spendingData[d][i]});
       }
-      console.log(d);
+      //console.log(d);
       svg.select("#line" + d)
           .duration(750)
           .attr("d", lineFunction(lineData))
@@ -1070,6 +1138,11 @@ function drawHoriCharts() {
     countrySetCopy.delete(maxCountry);
   }
 
+<<<<<<< HEAD
+=======
+  //console.log(topTenSet);
+
+>>>>>>> b4ff046363c2358971c749cd6e51f95568a1664a
   var xScale = d3.scaleLinear()
             .domain([0,topTenSet[0].total + 2000000])
             .range([0,lineWidth]);
@@ -1093,7 +1166,7 @@ function drawHoriCharts() {
   svg.append("g")
     .attr("class", "axis")
     .call(d3.axisLeft(yScale).tickSize(2).tickFormat(function(d, i) {
-      console.log(topTenSet[i].name);
+      //console.log(topTenSet[i].name);
         return topTenSet[i].name;
       }));
 
@@ -1135,8 +1208,8 @@ function drawHoriCharts() {
     .style('font-size', 10)
     .style('fill', 'white')
     .text(function (d) {
-      console.log(d);
-      return d.total;
+      //console.log(d);
+      return numberWithCommas(d.total);
     })
     .attr('x', function(d) {
       return xScale(d.total) + 10;
