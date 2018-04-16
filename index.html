@@ -144,6 +144,12 @@ div#horizontalSide {
 
 }
 
+.button {
+  background: #453859;
+  border: 2px solid #614c82;
+  color:white;
+}
+
 .axis line{
   stroke: white;
 }
@@ -241,50 +247,58 @@ By far, US spends more than any other country on their military. If US was remov
   <div id="sidebar">
     <div id="option">
     <input name="resetButton" 
-           type="button" 
+           type="button"
+           class="button" 
            value="Reset" 
            onclick="reset()" />
     </div>
     <div id="option">
     <input name="updateButton" 
-           type="button" 
+           type="button"
+           class="button" 
            value="Remove US" 
            onclick="removeUS()" />
     </div>
     <p>Filter by Region:</p>
     <div id="option">
     <input name="resetButton" 
-           type="button" 
+           type="button"
+           class="button" 
            value="Africa" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Americas" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Europe" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Oceania" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Middle East" 
            onclick="filter(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Asia" 
            onclick="filter(value)" />
     </div>
@@ -307,6 +321,7 @@ What is the overall proportion of the U.S.'s spending vs. other countries?
     <div id="option">
       <input name="resetButton" 
            type="button" 
+           class="button"
            value="Reset" 
            onclick="restChart(value)" />
     </div>
@@ -314,36 +329,42 @@ What is the overall proportion of the U.S.'s spending vs. other countries?
     <div id="option">
       <input name="resetButton" 
            type="button" 
+           class="button"
            value="Africa" 
            onclick="filterChart(value)" />
     </div>
     <div id="option">
       <input name="resetButton" 
            type="button" 
+           class="button"
            value="Asia" 
            onclick="filterChart(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Europe" 
            onclick="filterChart(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Middle East" 
            onclick="filterChart(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Oceania" 
            onclick="filterChart(value)" />
     </div>
     <div id="option">
     <input name="resetButton" 
            type="button" 
+           class="button"
            value="Americas" 
            onclick="filterChart(value)" />
     </div> 
