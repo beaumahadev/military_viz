@@ -7,6 +7,9 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
 <style>
 body { font-family: 'Merriweather', Calibri, sans-serif; }
+
+
+
 div.donut{ 
   display:block;
   width: 1000px;
@@ -40,9 +43,7 @@ div#sidebar {
   top: 1500px;
   left: 1050px;
 }
-div #sidebar p {
-  color: black;
-}
+
 div #option {
   margin-bottom: 10px;
 }
@@ -72,6 +73,15 @@ b{
 
 }
 
+h1{
+  font: 30px sans-serif;
+  color: #ce5ca4;
+  text-align: center;
+}
+h2{
+  color: #ce5ca4;
+}
+
 div.title {
     margin: auto;
     width:900px;
@@ -88,12 +98,7 @@ div.blurb {
   display: inline-block;
   vertical-align: top;
 }
-div.linegraph {
-  background-color: white
-}
-div.topfive {
-  background-color: white
-}
+
 svg#horizontalChart {
   width: 800px;
   height: 450px;
@@ -101,22 +106,14 @@ svg#horizontalChart {
   justify-content: left;
 }
 
-.title h1{
-    font: 30px sans-serif;
-    color: #ce5ca4;
-}
-
 
 .blurb h2{
   font: 25px sans-serif;
-  color:#ce5ca4;
 
 }
 
 .infobox h1{
   font: 20px sans-serif;
-  color: #ce5ca4;
-  text-align: center;
 }
 
 .infobox h2{
@@ -128,6 +125,18 @@ svg#horizontalChart {
   font: 10px sans-serif;
   color: white;
 
+}
+
+.axis line{
+  stroke: white;
+}
+
+.axis path{
+  stroke: white;
+}
+
+.axis text{
+  fill: white;
 }
 
 
@@ -188,6 +197,7 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
 </div>
 
 <div class="linegraph">
+  <h1>Overall Spending Over Time:</h1>
   <svg id="svglinegraph"></svg>
   <div id="sidebar">
     <p>By far, US spends more than any other country on their military. If US was removed from this graph, the distribution of spending among other countries can be more clearly seen.</p>
@@ -243,8 +253,8 @@ Between <b>1898 </b> and <b>1994</b>, the U.S. on average overthrew</br> <b> one
   </div>
 </div>
 
-<div class="topfive">
-  <h1>Total Military Spendings from 1990-2016:</h1>
+<div>
+  <h1>Top 5 Total Spending:</h1>
   <svg id="horizontalchart"></svg>
   <div id="option"></div>
 </div>
@@ -789,12 +799,12 @@ function drawLineGraph() {
   scaleY.domain([0, 800000]);
 
   svg.append("g")
-      .attr("class", "greyLine")
+      .attr("class", "axis")
       .attr("transform", "translate(0," + lineHeight + ")")
       .call(d3.axisBottom(scaleX).tickFormat(d3.format("d")));
 
     svg.append("g")
-      .attr("class", "yAxis")
+      .attr("class", "axis")
       .call(d3.axisLeft(scaleY));
 
     var yearCounter = 1990;
@@ -844,14 +854,14 @@ function drawLineGraph() {
     .attr("transform", "translate(" + -50 + "," + (lineHeight/2) + ")rotate(-90)")
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Domestic Military Spending")
-    //.style("fill", "#cdcdcd");
+    .style("fill", "white");
 
   svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 30) + ")")
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Year")
-    //.style("fill", "#cdcdcd");
+    .style("fill", "white");
 }
 
 //code inspiration for animations from http://duspviz.mit.edu/d3-workshop/transitions-animation/
@@ -1044,10 +1054,11 @@ function drawHoriCharts() {
 
   svg.append("g")
       .attr("transform", "translate(0," + Number(lineHeight + 14) + ")")
+      .attr("class", "axis")
       .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
 
   svg.append("g")
-    .attr("class", "yAxis")
+    .attr("class", "axis")
     .call(d3.axisLeft(yScale).tickSize(2).tickFormat(function(d, i) {
       console.log(topTenSet[i].name);
         return topTenSet[i].name;
@@ -1078,6 +1089,7 @@ function drawHoriCharts() {
     .enter()
     .append('text')
     .style('font-size', 10)
+    .style('fill', 'white')
     .text(function (d) {
       console.log(d);
       return d.total;
