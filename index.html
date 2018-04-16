@@ -177,7 +177,7 @@ Defense Budget Allocation by International Governments
 </h1>
 <p>
 <i>
-Understanding the vast amounts of money spent by the U.S. government and other European countries on military operations and exploring their roles in the destabilization of other countries. 
+Understanding the vast amounts of money spent by the U.S. government and other European countries on military operations to explore their roles in the destabilization of other countries. 
 </i>
 </p>
 </div>
@@ -818,6 +818,12 @@ g.append('text')
 
 }
 
+  const numberWithCommas = (x) => {
+    var px = Math.round(x, 1);
+    return (px+'').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+  }
+
 function displayInfoBox(data, cdata) {
 
   var warName= document.getElementById('name');
@@ -827,12 +833,6 @@ function displayInfoBox(data, cdata) {
   //console.log(data);
   warName.innerHTML= data.name;
   warDesc.innerHTML= data.desc;
-  
-  const numberWithCommas = (x) => {
-    var px = Math.round(x, 1);
-    return (px+'').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-  }
 
   function madeLessThan(ob1,ob2){
     if(ob1.totalInterval > ob2.totalInterval){
@@ -1186,7 +1186,7 @@ function drawHoriCharts() {
     .style('fill', 'white')
     .text(function (d) {
       //console.log(d);
-      return d.total;
+      return numberWithCommas(d.total);
     })
     .attr('x', function(d) {
       return xScale(d.total) + 10;
