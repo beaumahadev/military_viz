@@ -322,6 +322,7 @@ var maxSpending = 0;
 var maxCountry = "";
 var maxTotal = 0;
 var counter = -1;
+var noUS = false;
 //removed Ukraine, Yemen, Israel, Kuwait, Japan, 
 const countrySet = new Set(["Angola","Burundi", "Congo","Djibouti", "Rwanda","Uganda","SouthAfrica","Sudan", "UnitedStates","Canada","Mexico","Brazil", "China", "Philippines", "SouthKorea","Pakistan", "Afghanistan", "India", "Australia","Iran","Iraq", "Kuwait", "Israel", "Oman", "UAE", "Yemen", "SaudiArabia", "Qatar", "Turkey", "Georgia", "Russia", "France", "Germany", "Ukraine", "Italy", "UK", "Spain", "Romania", "Albania"]);
 
@@ -917,6 +918,7 @@ function removeUS() {
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
+
   var noUSSet = new Set(countrySet);
   noUSSet.delete("UnitedStates");
 
@@ -950,6 +952,8 @@ function removeUS() {
           .duration(750)
           .attr("d", lineFunction(lineData));
     });
+
+  noUS = true;
 }
 
 function reset() {
@@ -984,6 +988,8 @@ function reset() {
           .attr("d", lineFunction(lineData))
           .attr("transform", "translate(0,0)");
     });
+
+  noUS = false;
 }
 
 function filter(value) {
@@ -1007,7 +1013,12 @@ function filter(value) {
       scaleY.domain([0, 200000]);
       break;
     case "Americas":
-      scaleY.domain([0, 800000]);
+      console.log(noUS);
+      if (noUS) {
+        scaleY.domain([0, 40000]);
+      } else {
+        scaleY.domain([0, 800000]);
+      }
       break;
     case "Middle East":
       scaleY.domain([0, 100000]);
