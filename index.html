@@ -58,6 +58,9 @@ div.blurb {
   display: inline-block;
   vertical-align: top;
 }
+div.linegraph {
+  background-color: white
+}
 
 .title h1{
     font: 30px sans-serif;
@@ -698,20 +701,18 @@ function drawLineGraph() {
 
 
   svg.append("text")
-    //.attr("class", "greyLines")
     .attr("text-anchor", "middle")
     .attr("transform", "translate(" + -50 + "," + (lineHeight/2) + ")rotate(-90)")
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Domestic Military Spending")
-    .style("fill", "#cdcdcd");
+    //.style("fill", "#cdcdcd");
 
   svg.append("text")
-    //.attr("class", "greyLines")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 30) + ")")
     //.attr("font-family", "'Ubuntu', sans-serif")
     .text("Year")
-    .style("fill", "#cdcdcd");
+    //.style("fill", "#cdcdcd");
 
 }
 
