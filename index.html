@@ -324,58 +324,12 @@ What is the overall proportion of the U.S.'s spending vs. other countries?
            value="Reset" 
            onclick="restChart(value)" />
     </div>
-<<<<<<< HEAD
     <div id="option">
       <input name="resetButton" 
            type="button" 
            value="Stack!" 
            onclick="stackHoriCharts()" />
     </div>
-=======
-    <p>Filter by Region:</p>
-    <div id="option">
-      <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Africa" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-      <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Asia" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Europe" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Middle East" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Oceania" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Americas" 
-           onclick="filterChart(value)" />
-    </div> 
->>>>>>> b4ff046363c2358971c749cd6e51f95568a1664a
   </div>
 </div>
 
@@ -893,11 +847,13 @@ function drawLineGraph() {
 
   svg.append("g")
       .attr("class", "axis")
+      .attr("id", "xAxis")
       .attr("transform", "translate(0," + lineHeight + ")")
       .call(d3.axisBottom(scaleX).tickFormat(d3.format("d")));
 
     svg.append("g")
       .attr("class", "axis")
+      .attr("id", "yAxis")
       .call(d3.axisLeft(scaleY));
 
     var yearCounter = 1990;
@@ -1018,7 +974,7 @@ function reset() {
                        .y(function(d) { return scaleY(d.value); })
                        .curve(d3.curveLinear); 
 
-  svg.select(".yAxis")
+  svg.select("#yAxis")
     .duration(750)
     .call(d3.axisLeft(scaleY));
 
@@ -1080,7 +1036,7 @@ function filter(value) {
                        .y(function(d) { return scaleY(d.value); })
                        .curve(d3.curveLinear); 
 
-  svg.select(".yAxis")
+  svg.select("#yAxis")
     .duration(750)
     .call(d3.axisLeft(scaleY));
 
@@ -1138,11 +1094,6 @@ function drawHoriCharts() {
     countrySetCopy.delete(maxCountry);
   }
 
-<<<<<<< HEAD
-=======
-  //console.log(topTenSet);
-
->>>>>>> b4ff046363c2358971c749cd6e51f95568a1664a
   var xScale = d3.scaleLinear()
             .domain([0,topTenSet[0].total + 2000000])
             .range([0,lineWidth]);
@@ -1165,7 +1116,9 @@ function drawHoriCharts() {
 
   svg.append("g")
     .attr("class", "axis")
-    .call(d3.axisLeft(yScale).tickSize(2).tickFormat(function(d, i) {
+    .attr("id", "yaxis")
+    .call(d3.axisLeft(yScale).tickSize(2)
+      .tickFormat(function(d, i) {
       //console.log(topTenSet[i].name);
         return topTenSet[i].name;
       }));
@@ -1260,16 +1213,26 @@ console.log(topNineSet);
 
   topNineSet.forEach(function(d) {
     svg.select("#bar" + d.name)
-      .duration('750')
+      .duration(2000)
       .attr('x', xScale(d.x))
-      .duration('750')
+      .duration(2000)
       .attr('y', 26.8888);
   });
 
+  var newLabels = ["United States", "Other Top 9", "", "", "", "", "", "", "", ""];
+
   svg.select('#Chinatext')
-    .duration('750')
+    .duration(2000)
     .text(runningTotal)
     .attr("x", xScale(Number(runningTotal)) + 10);
+
+  svg.select("#yaxis")
+    .duration(2000)
+    .call(d3.axisLeft(yScale).tickSize(2)
+      .tickFormat(function(d, i) {
+        return newLabels[i];
+      }));
+
 
 }
 
