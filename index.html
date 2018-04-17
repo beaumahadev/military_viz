@@ -958,10 +958,10 @@ function drawLineGraph() {
 
 //code inspiration for animations from http://duspviz.mit.edu/d3-workshop/transitions-animation/
 function removeUS() {
+  if (!noUS) {
   var margin = {top: 20, right: 20, bottom: 40, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
-
 
   var noUSSet = new Set(countrySet);
   noUSSet.delete("UnitedStates");
@@ -996,8 +996,8 @@ function removeUS() {
           .duration(750)
           .attr("d", lineFunction(lineData));
     });
-
-  noUS = true;
+  noUS = false;
+  }
 }
 
 function reset() {
@@ -1032,8 +1032,7 @@ function reset() {
           .attr("d", lineFunction(lineData))
           .attr("transform", "translate(0,0)");
     });
-
-  noUS = false;
+noUS = false;
 }
 
 function filter(value) {
@@ -1048,12 +1047,15 @@ function filter(value) {
   scaleX.domain([1990,2016]);
   switch (value) {
     case "Africa":
+      noUS = true;
       scaleY.domain([0, 9000]);
       break;
     case "Asia":
+      noUS = true;
       scaleY.domain([0, 260000]);
       break;  
     case "Europe":
+      noUS = true;
       scaleY.domain([0, 200000]);
       break;
     case "Americas":
@@ -1063,11 +1065,14 @@ function filter(value) {
       } else {
         scaleY.domain([0, 800000]);
       }
+      noUS = false;
       break;
     case "Middle East":
+      noUS = true;
       scaleY.domain([0, 100000]);
       break;
     case "Oceania":
+      noUS = true;
       scaleY.domain([0, 180000]);
       break;          
   }
@@ -1117,7 +1122,7 @@ function filter(value) {
 
 function drawHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 800 - margin.left - margin.right,
+    lineWidth = 700 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
   var topTenSet = [];
@@ -1225,7 +1230,7 @@ function drawHoriCharts() {
 //inspiration from https://bl.ocks.org/mbostock/3887051
 function stackHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 800 - margin.left - margin.right,
+    lineWidth = 700 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
     var topNineSet = [];
@@ -1288,7 +1293,7 @@ console.log(topNineSet);
 
 function resetHori() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 800 - margin.left - margin.right,
+    lineWidth = 700 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
   var topTenSet = [];
