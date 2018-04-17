@@ -16,13 +16,23 @@ div.donut{
   height: 1000px;
   justify-content: left;
  }
+ div.legend{
+  display: inline-block;
+  vertical-align: top;
+  position: absolute; 
+  padding: 10px; 
+  top: 600px;
+  height:200px; 
+  width:200px;
+  left: 950px;
+ }
 div.infobox{
   width:200px;
   background: #453859;
   display: inline-block;
   vertical-align: top;
   position: absolute;  
-  top: 800px; 
+  top: 900px; 
   left: 1050px;
   border-left: 4px solid #614c82;
   border-bottom: 4px solid #614c82;
@@ -121,7 +131,9 @@ div#horizontalSide {
   top: 2550px;
   left: 850px;
 }
-
+.legend h1{
+  font: 20px sans-serif;
+}
 
 .blurb h2{
   font: 25px sans-serif;
@@ -222,7 +234,9 @@ The visualization below explores recent international wars and the respective mi
 
 
 <div  class= "donut" id="donut"></div>
-
+<div class="legend">
+  <h1>Legend: </h1>
+</div>
 <div class= "infobox" id="infobox">
  <h1>
  War Info:
@@ -426,9 +440,7 @@ d3.queue()
             }
             spendingData[d["Country "].replace(/\s+/g, '')] = d;
           });
-         // console.log(spendingData);
-          //console.log(maxTotal);
-          //console.log(maxCountry);
+          legend();
           donutchartinner(countrySet);
           drawLineGraph();
           drawHoriCharts();
@@ -916,7 +928,7 @@ function drawLineGraph() {
 
 //code inspiration for animations from http://duspviz.mit.edu/d3-workshop/transitions-animation/
 function removeUS() {
-  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+  var margin = {top: 20, right: 20, bottom: 40, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -959,7 +971,7 @@ function removeUS() {
 }
 
 function reset() {
-  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+  var margin = {top: 20, right: 20, bottom: 40, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -996,7 +1008,7 @@ function reset() {
 
 function filter(value) {
   //console.log(value);
-  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+  var margin = {top: 20, right: 20, bottom: 40, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -1292,7 +1304,31 @@ function resetHori() {
       .tickFormat(function(d, i) {
         return topTenSet[i].name;
       }));
+}
 
+function legend() {
+  var svg = d3.select(".legend").append("svg")
+    .attr("height", 500)
+    .attr("width", 200)
+    .style("padding-left", 50);
+  var counter = 0;
+  colorToCountry.forEach(function(k,v) {
+    svg.append("circle")
+      .attr("cx", 10)
+      .attr("cy", counter*30 + 20)
+      .attr("r", 9)
+      .attr("fill", k);
+
+    svg.append("text")
+      .attr("x", 30)
+      .attr("y", counter*30 + 25)
+      .text(v)
+      .style("fill", "white")
+      .style("font-size", "12");
+    counter++;
+    console.log(k);
+    console.log(v);
+  }); 
 }
 
 
