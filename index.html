@@ -16,23 +16,13 @@ div.donut{
   height: 1000px;
   justify-content: left;
  }
- div.legend{
-  display: inline-block;
-  vertical-align: top;
-  position: absolute; 
-  padding: 10px; 
-  top: 600px;
-  height:200px; 
-  width:200px;
-  left: 950px;
- }
 div.infobox{
   width:200px;
   background: #453859;
   display: inline-block;
   vertical-align: top;
   position: absolute;  
-  top: 900px; 
+  top: 800px; 
   left: 1050px;
   border-left: 4px solid #614c82;
   border-bottom: 4px solid #614c82;
@@ -43,13 +33,6 @@ svg#svglinegraph {
   height: 550px;
   display:block;
 
-}
-div#linename {
-  width:150px;
-  height: 50px; 
-  position: absolute;
-  top: 1800px;
-  left: 1000px;
 }
 div#sidebar {
   display: inline-block;
@@ -138,9 +121,7 @@ div#horizontalSide {
   top: 2550px;
   left: 850px;
 }
-.legend h1{
-  font: 20px sans-serif;
-}
+
 
 .blurb h2{
   font: 25px sans-serif;
@@ -241,9 +222,7 @@ The visualization below explores recent international wars and the respective mi
 
 
 <div  class= "donut" id="donut"></div>
-<div class="legend">
-  <h1>Legend: </h1>
-</div>
+
 <div class= "infobox" id="infobox">
  <h1>
  War Info:
@@ -264,11 +243,6 @@ By far, US spends more than any other country on their military. If US was remov
 
 <div class="linegraph">
   <svg id="svglinegraph"></svg>
-  <div id="linename">
-    <svg>
-      <text id="linetext"></text>>
-    </svg>
-  </div>
   <div id="sidebar">
     <div id="option">
     <input name="resetButton" 
@@ -394,7 +368,7 @@ var mainSVG = d3.select("#donut").append('svg')
 .style("width", width);
 
 d3.queue()
-        .defer(d3.csv, "wars_final.csv")
+        .defer(d3.csv, "data/wars.csv")
         .await(callback)
         function callback (error, data) {
           data.forEach(function(d) {
@@ -431,7 +405,7 @@ d3.queue()
         }
 
 d3.queue()
-        .defer(d3.csv, "spending_final.csv")
+        .defer(d3.csv, "data/spending_final.csv")
         .await(callback2)
         function callback2 (error, data) {
           data.forEach(function(d) {
@@ -452,7 +426,9 @@ d3.queue()
             }
             spendingData[d["Country "].replace(/\s+/g, '')] = d;
           });
-          legend();
+         // console.log(spendingData);
+          //console.log(maxTotal);
+          //console.log(maxCountry);
           donutchartinner(countrySet);
           drawLineGraph();
           drawHoriCharts();
@@ -907,20 +883,6 @@ function drawLineGraph() {
           .on("mouseover", function() {
             console.log(d);
             d3.select(this).style("stroke-width", 5);
-            var newtext = d3.select("#linetext")
-            .attr('x', 0)
-              .attr('y', 50)
-              .style("font-size", 20)
-              .style("padding-left", 10)
-              .style("fill", "white");
-            newtext.transition()
-              .duration(500)
-              .text(function() {
-                if (d == "SouthAfrica") return "South Africa";
-                else if (d == "SouthKorea") return "South Korea";
-                else if (d == "SaudiArabia") return "Saudi Arabia";
-                else if (d == "UnitedStates") return "United States";
-                else return d;});
             tooltip.transition()
               .duration(200)
               .style("opacity", 0.9);
@@ -933,10 +895,6 @@ function drawLineGraph() {
             tooltip.transition()
               .duration(500)
               .style("opacity", 0);
-            var newtext = d3.select("#linetext");
-            newtext.transition()
-              .duration(500)
-              .text("");
           });
     });
 
@@ -958,7 +916,7 @@ function drawLineGraph() {
 
 //code inspiration for animations from http://duspviz.mit.edu/d3-workshop/transitions-animation/
 function removeUS() {
-  var margin = {top: 20, right: 20, bottom: 40, left: 170},
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -1001,7 +959,7 @@ function removeUS() {
 }
 
 function reset() {
-  var margin = {top: 20, right: 20, bottom: 40, left: 170},
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -1038,7 +996,7 @@ function reset() {
 
 function filter(value) {
   //console.log(value);
-  var margin = {top: 20, right: 20, bottom: 40, left: 170},
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 960 - margin.left - margin.right,
     lineHeight = 500 - margin.top - margin.bottom;
 
@@ -1117,7 +1075,7 @@ function filter(value) {
 
 function drawHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 800 - margin.left - margin.right,
+    lineWidth = 700 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
   var topTenSet = [];
@@ -1213,19 +1171,12 @@ function drawHoriCharts() {
     .attr('y', function(d, i) {
       return yScale(i) ;
     });
-
-  svg.append("text")
-    .attr("text-anchor", "middle")
-    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 35) + ")")
-    //.attr("font-family", "'Ubuntu', sans-serif")
-    .text("Total Spending from 1990-2016 (in millions)")
-    .style("fill", "white");
 }
 
 //inspiration from https://bl.ocks.org/mbostock/3887051
 function stackHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 800 - margin.left - margin.right,
+    lineWidth = 700 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
     var topNineSet = [];
@@ -1288,7 +1239,7 @@ console.log(topNineSet);
 
 function resetHori() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 800 - margin.left - margin.right,
+    lineWidth = 700 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
   var topTenSet = [];
@@ -1341,31 +1292,7 @@ function resetHori() {
       .tickFormat(function(d, i) {
         return topTenSet[i].name;
       }));
-}
 
-function legend() {
-  var svg = d3.select(".legend").append("svg")
-    .attr("height", 500)
-    .attr("width", 200)
-    .style("padding-left", 50);
-  var counter = 0;
-  colorToCountry.forEach(function(k,v) {
-    svg.append("circle")
-      .attr("cx", 10)
-      .attr("cy", counter*30 + 20)
-      .attr("r", 9)
-      .attr("fill", k);
-
-    svg.append("text")
-      .attr("x", 30)
-      .attr("y", counter*30 + 25)
-      .text(v)
-      .style("fill", "white")
-      .style("font-size", "12");
-    counter++;
-    console.log(k);
-    console.log(v);
-  }); 
 }
 
 
