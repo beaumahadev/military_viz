@@ -51,7 +51,13 @@ div#sidebar {
   top: 1900px;
   left: 1050px;
 }
-
+div#linename {
+  width:150px;
+  height: 50px; 
+  position: absolute;
+  top: 1800px;
+  left: 1000px;
+}
 div #option {
   margin-bottom: 10px;
 }
@@ -252,6 +258,11 @@ By far, US spends more than any other country on their military. If US was remov
 
 <div class="linegraph">
   <svg id="svglinegraph"></svg>
+  <div id="linename">
+    <svg>
+      <text id="linetext"></text>>
+    </svg>
+  </div>
   <div id="sidebar">
     <div id="option">
     <input name="resetButton" 
@@ -846,6 +857,20 @@ function drawLineGraph() {
           .on("mouseover", function() {
             console.log(d);
             d3.select(this).style("stroke-width", 5);
+            var newtext = d3.select("#linetext")
+            .attr('x', 0)
+              .attr('y', 50)
+              .style("font-size", 20)
+              .style("padding-left", 10)
+              .style("fill", "white");
+            newtext.transition()
+              .duration(500)
+              .text(function() {
+                if (d == "SouthAfrica") return "South Africa";
+                else if (d == "SouthKorea") return "South Korea";
+                else if (d == "SaudiArabia") return "Saudi Arabia";
+                else if (d == "UnitedStates") return "United States";
+                else return d;});
             tooltip.transition()
               .duration(200)
               .style("opacity", 0.9);
@@ -858,6 +883,10 @@ function drawLineGraph() {
             tooltip.transition()
               .duration(500)
               .style("opacity", 0);
+            var newtext = d3.select("#linetext");
+            newtext.transition()
+              .duration(500)
+              .text("");
           });
     });
 
