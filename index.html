@@ -915,7 +915,12 @@ function drawLineGraph() {
               .style("fill", "white");
             newtext.transition()
               .duration(500)
-              .text(d);
+              .text(function() {
+                if (d == "SouthAfrica") return "South Africa";
+                else if (d == "SouthKorea") return "South Korea";
+                else if (d == "SaudiArabia") return "Saudi Arabia";
+                else if (d == "UnitedStates") return "United States";
+                else return d;});
             tooltip.transition()
               .duration(200)
               .style("opacity", 0.9);
@@ -1112,7 +1117,7 @@ function filter(value) {
 
 function drawHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 700 - margin.left - margin.right,
+    lineWidth = 800 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
   var topTenSet = [];
@@ -1208,12 +1213,19 @@ function drawHoriCharts() {
     .attr('y', function(d, i) {
       return yScale(i) ;
     });
+
+  svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate("+ (lineWidth/2) +","+(lineHeight + 35) + ")")
+    //.attr("font-family", "'Ubuntu', sans-serif")
+    .text("Total Spending from 1990-2016 (in millions)")
+    .style("fill", "white");
 }
 
 //inspiration from https://bl.ocks.org/mbostock/3887051
 function stackHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 700 - margin.left - margin.right,
+    lineWidth = 800 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
     var topNineSet = [];
@@ -1276,7 +1288,7 @@ console.log(topNineSet);
 
 function resetHori() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
-    lineWidth = 700 - margin.left - margin.right,
+    lineWidth = 800 - margin.left - margin.right,
     lineHeight = 400 - margin.top - margin.bottom;
 
   var topTenSet = [];
