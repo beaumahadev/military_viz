@@ -324,58 +324,13 @@ What is the overall proportion of the U.S.'s spending vs. other countries?
            value="Reset" 
            onclick="restChart(value)" />
     </div>
-<<<<<<< HEAD
     <div id="option">
       <input name="resetButton" 
            type="button" 
            value="Stack!" 
+           class="button"
            onclick="stackHoriCharts()" />
     </div>
-=======
-    <p>Filter by Region:</p>
-    <div id="option">
-      <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Africa" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-      <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Asia" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Europe" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Middle East" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Oceania" 
-           onclick="filterChart(value)" />
-    </div>
-    <div id="option">
-    <input name="resetButton" 
-           type="button" 
-           class="button"
-           value="Americas" 
-           onclick="filterChart(value)" />
-    </div> 
->>>>>>> b4ff046363c2358971c749cd6e51f95568a1664a
   </div>
 </div>
 
@@ -1138,11 +1093,6 @@ function drawHoriCharts() {
     countrySetCopy.delete(maxCountry);
   }
 
-<<<<<<< HEAD
-=======
-  //console.log(topTenSet);
-
->>>>>>> b4ff046363c2358971c749cd6e51f95568a1664a
   var xScale = d3.scaleLinear()
             .domain([0,topTenSet[0].total + 2000000])
             .range([0,lineWidth]);
