@@ -316,17 +316,18 @@ What is the overall proportion of the U.S.'s spending vs. other countries?
 <div>
   <svg id="horizontalchart"></svg>
   <div id="horizontalSide">
-    <p>Top Ten Countries: </p>
+    <p>Even when the top 9 countries excluding U.S. is stacked side by side, the total amount of military spending by those 9 countries is less than that of U.S.</p>
     <div id="option">
       <input name="resetButton" 
            type="button" 
            class="button"
            value="Reset" 
-           onclick="restChart(value)" />
+           onclick="resetHori()" />
     </div>
     <div id="option">
       <input name="resetButton" 
            type="button" 
+           class="button"
            value="Stack!" 
            onclick="stackHoriCharts()" />
     </div>
@@ -975,7 +976,7 @@ function reset() {
                        .curve(d3.curveLinear); 
 
   svg.select("#yAxis")
-    .duration(750)
+    .duration(2000)
     .call(d3.axisLeft(scaleY));
 
   countrySet.forEach(function(d) {
@@ -985,7 +986,7 @@ function reset() {
       }
       //console.log(d);
       svg.select("#line" + d)
-          .duration(750)
+          .duration(2000)
           .attr("d", lineFunction(lineData))
           .attr("transform", "translate(0,0)");
     });
@@ -1037,7 +1038,7 @@ function filter(value) {
                        .curve(d3.curveLinear); 
 
   svg.select("#yAxis")
-    .duration(750)
+    .duration(2000)
     .call(d3.axisLeft(scaleY));
 
   var nonRegionSet = new Set();
@@ -1060,14 +1061,14 @@ function filter(value) {
       }
       //console.log(d);
       svg.select("#line" + d)
-          .duration(750)
+          .duration(2000)
           .attr("d", lineFunction(lineData))
           .attr("transform", "translate(0,0)");
     });
 
   nonRegionSet.forEach(function(d) {
     svg.select("#line" + d)
-   .duration(750)
+   .duration(2000)
    .attr("transform", "translate(0, -800)");
   })
 }
@@ -1172,6 +1173,7 @@ function drawHoriCharts() {
     });
 }
 
+//inspiration from https://bl.ocks.org/mbostock/3887051
 function stackHoriCharts() {
   var margin = {top: 20, right: 20, bottom: 30, left: 170},
     lineWidth = 700 - margin.left - margin.right,
@@ -1200,7 +1202,7 @@ console.log(topNineSet);
   var svg = d3.select("#horizontalchart").transition();
 
   svg.selectAll('#text')
-    .duration('750')
+    .duration(2000)
     .attr("transform", "translate(800, 0)");
 
   var xScale = d3.scaleLinear()
@@ -1223,7 +1225,7 @@ console.log(topNineSet);
 
   svg.select('#Chinatext')
     .duration(2000)
-    .text(runningTotal)
+    .text(numberWithCommas(runningTotal))
     .attr("x", xScale(Number(runningTotal)) + 10);
 
   svg.select("#yaxis")
@@ -1233,6 +1235,63 @@ console.log(topNineSet);
         return newLabels[i];
       }));
 
+}
+
+function resetHori() {
+  var margin = {top: 20, right: 20, bottom: 30, left: 170},
+    lineWidth = 700 - margin.left - margin.right,
+    lineHeight = 400 - margin.top - margin.bottom;
+
+  var topTenSet = [];
+  var countrySetCopy = new Set(countrySet);
+  
+  for (var i = 0; i < 10; i++) {
+    var maxCountry = "";
+    var maxTotal = 0;
+    countrySetCopy.forEach(function(d) {
+      if (spendingData[d].total > maxTotal) {
+        maxTotal = spendingData[d].total;
+        maxCountry = d;
+      }
+    });
+    //topTenSet.add(maxCountry);
+    topTenSet.push({"name": maxCountry, "total": maxTotal});
+    countrySetCopy.delete(maxCountry);
+  }
+
+  var xScale = d3.scaleLinear()
+            .domain([0,topTenSet[0].total + 2000000])
+            .range([0,lineWidth]);
+
+  var yScale = d3.scaleLinear()
+          .domain([0,topTenSet.length - 1])
+          .range([0,lineHeight]);
+
+  var svg = d3.select("#horizontalchart").transition();
+
+  topTenSet.forEach(function(d, i) {
+    svg.select("#bar" + d.name)
+      .duration(2000)
+      .attr('x', 0)
+      .duration(2000)
+      .attr('y', yScale(i) - 12);
+  });
+
+  svg.select('#Chinatext')
+    .duration(2000)
+    .text(numberWithCommas(topTenSet[1].total))
+    .attr("x", xScale(topTenSet[1].total) + 10);
+
+  svg.selectAll('#text')
+    .duration(2000)
+    .attr("transform", "translate(0, 0)");
+
+  svg.select("#yaxis")
+    .duration(2000)
+    .call(d3.axisLeft(yScale).tickSize(2)
+      .tickFormat(function(d, i) {
+        return topTenSet[i].name;
+      }));
 
 }
 
